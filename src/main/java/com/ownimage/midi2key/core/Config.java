@@ -1,6 +1,8 @@
-package com.ownimage.midi2key;
+package com.ownimage.midi2key.core;
 
 import com.google.gson.Gson;
+import com.ownimage.midi2key.model.KeyboardStroke;
+import com.ownimage.midi2key.model.MidiEvent;
 import lombok.*;
 
 import java.io.File;
@@ -19,8 +21,8 @@ import java.util.Map;
 @Builder(toBuilder = true)
 public class Config {
 
-    public List<Integer> rotaryControl;
-    public Map<Integer, Key> mapping;
+    private List<Integer> rotaryControl;
+    private Map<Integer, KeyboardStroke> mapping;
 
     public static ConfigBuilder builder() {
         return new Config(new ArrayList<>(), new HashMap<>()).toBuilder();
@@ -32,15 +34,10 @@ public class Config {
         return gson.fromJson(json, Config.class);
     }
 
-    public Config addRotaryControl(int control) {
-        List<Integer> rc = new ArrayList<>(rotaryControl);
-        rc.add(control);
-        return new Config(rc, mapping);
-    }
-
     public void save(File file) {
         try {
             Gson gson = new Gson();
+
             String json = gson.toJson(this);
 
             FileWriter fileWriter = new FileWriter(file);
@@ -51,4 +48,17 @@ public class Config {
             e.printStackTrace();
         }
     }
+
+    public Config addRotaryControl(int control) {
+        List<Integer> rc = new ArrayList<>(rotaryControl);
+        rc.add(control);
+        return new Config(rc, mapping);
+    }
+
+    public Config addMapping(MidiEvent midiEvent, KeyboardStroke keyboardStroke) {
+        var m = new HashMap<>(mapping);
+        m.put(midiEvent.getKey(), keyboardStroke);
+        return new Config(rotaryControl, m);
+    }
+
 }
