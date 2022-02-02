@@ -12,7 +12,7 @@ public class MidiEvent {
     private int control;
     private int value;
 
-    public int getKey() {
-        return control;
+    public String getKey() {
+        return "" + control;
     }
 }

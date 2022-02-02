@@ -22,7 +22,7 @@ import java.util.Map;
 public class Config {
 
     private List<Integer> rotaryControl;
-    private Map<Integer, KeyboardStroke> mapping;
+    private Map<String, KeyboardStroke> mapping;
 
     public static ConfigBuilder builder() {
         return new Config(new ArrayList<>(), new HashMap<>()).toBuilder();
@@ -50,8 +50,8 @@ public class Config {
     }
 
     public Config addRotaryControl(MidiEvent midiEvent) {
-        List<Integer> rc = new ArrayList<>(rotaryControl);
-        rc.add(midiEvent.getKey());
+        var rc = new ArrayList<>(rotaryControl);
+        rc.add(midiEvent.getControl());
         return new Config(rc, mapping);
     }
 

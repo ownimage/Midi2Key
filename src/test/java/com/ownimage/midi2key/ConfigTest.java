@@ -79,7 +79,7 @@ class ConfigTest {
                 .addRotaryControl(new MidiEvent(2, 10))
                 .addMapping(new MidiEvent(10, 20), new KeyboardStroke(true, true, false, (short)19))
                 .addMapping(new MidiEvent(11, 21), new KeyboardStroke(true, true, false, (short)120));
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19},\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120}}}";
+        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120},\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19}}}";
         // when
         config.save(testFile);
         // then
@@ -92,7 +92,7 @@ class ConfigTest {
         // given
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);;
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19},\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120}}}";
+        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120},\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19}}}";
         stringToFile(expected,testFile);
         // when
         var config = Config.read(testFile);
