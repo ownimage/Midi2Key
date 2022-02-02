@@ -1,0 +1,10 @@
+https://howtodoinjava.com/lombok/lombok-builder-read-write-json/
+
+Add annotation processing
+https://www.baeldung.com/lombok-ide
+
+Add maven support to existing project
+https://www.jetbrains.com/help/idea/convert-a-regular-project-into-a-maven-project.html
+
+keyboard handler
+https://github.com/kwhat/jnativehook
