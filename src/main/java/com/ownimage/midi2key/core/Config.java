@@ -49,9 +49,9 @@ public class Config {
         }
     }
 
-    public Config addRotaryControl(int control) {
+    public Config addRotaryControl(MidiEvent midiEvent) {
         List<Integer> rc = new ArrayList<>(rotaryControl);
-        rc.add(control);
+        rc.add(midiEvent.getKey());
         return new Config(rc, mapping);
     }
 

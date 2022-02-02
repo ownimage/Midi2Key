@@ -45,7 +45,7 @@ class ConfigTest {
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
         var expectedAfter = "{\"rotaryControl\":[1],\"mapping\":{}}";
         // when
-        var after = underTest.addRotaryControl(1);
+        var after = underTest.addRotaryControl(new MidiEvent(1, 10));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
@@ -59,7 +59,9 @@ class ConfigTest {
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
         var expectedAfter = "{\"rotaryControl\":[1,2],\"mapping\":{}}";
         // when
-        var after = underTest.addRotaryControl(1).addRotaryControl(2);
+        var after = underTest
+                .addRotaryControl(new MidiEvent(1, 10))
+                .addRotaryControl(new MidiEvent(2, 10));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
@@ -73,8 +75,8 @@ class ConfigTest {
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);
         var config = underTest
-                .addRotaryControl(1)
-                .addRotaryControl(2)
+                .addRotaryControl(new MidiEvent(1, 10))
+                .addRotaryControl(new MidiEvent(2, 10))
                 .addMapping(new MidiEvent(10, 20), new KeyboardStroke(true, true, false, (short)19))
                 .addMapping(new MidiEvent(11, 21), new KeyboardStroke(true, true, false, (short)120));
         var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19},\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120}}}";
