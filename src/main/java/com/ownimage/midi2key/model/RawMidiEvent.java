@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @EqualsAndHashCode
-public class MidiEvent {
+public class RawMidiEvent {
 
     private int control;
     private int value;

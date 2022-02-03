@@ -7,22 +7,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MidiEventTest {
+class RawMidiEventTest {
 
-    private MidiEvent underTest;
+    private RawMidiEvent underTest;
 
     Gson gson;
 
     @BeforeEach
     public void before() {
-        underTest= new MidiEvent(10, 20);
+        underTest= new RawMidiEvent(10, 20);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     @Test
     public void testEquals() {
         // given
-        var compare =  new MidiEvent(10, 20);
+        var compare =  new RawMidiEvent(10, 20);
         // then
         assertTrue(compare.equals(underTest));
     }
@@ -30,7 +30,7 @@ class MidiEventTest {
     @Test
     public void testNotEquals() {
         // given
-        var compare = new MidiEvent(10, 21);
+        var compare = new RawMidiEvent(10, 21);
         // then
         assertFalse(compare.equals(underTest));
     }
@@ -50,7 +50,7 @@ class MidiEventTest {
         // given
         var from = "{\"control\":10,\"value\":20}";
         // when
-        var actual = gson.fromJson(from, MidiEvent.class);
+        var actual = gson.fromJson(from, RawMidiEvent.class);
         // then
         assertEquals(underTest, actual);
     }

@@ -2,7 +2,7 @@ package com.ownimage.midi2key.core;
 
 import com.google.gson.Gson;
 import com.ownimage.midi2key.model.KeyboardStroke;
-import com.ownimage.midi2key.model.MidiEvent;
+import com.ownimage.midi2key.model.RawMidiEvent;
 import lombok.*;
 
 import java.io.File;
@@ -49,16 +49,21 @@ public class Config {
         }
     }
 
-    public Config addRotaryControl(MidiEvent midiEvent) {
-        var rc = new ArrayList<>(rotaryControl);
-        rc.add(midiEvent.getControl());
+    public Config addRotaryControl(RawMidiEvent rawMidiEvent) {
+        if (rawMidiEvent == null) return this;
+
+        List<Integer> rc = new ArrayList<>(rotaryControl);
+        rc.add(rawMidiEvent.getKey());
         return new Config(rc, mapping);
     }
 
-    public Config addMapping(MidiEvent midiEvent, KeyboardStroke keyboardStroke) {
+    public Config addMapping(RawMidiEvent rawMidiEvent, KeyboardStroke keyboardStroke) {
         var m = new HashMap<>(mapping);
-        m.put(midiEvent.getKey(), keyboardStroke);
+        m.put(rawMidiEvent.getKey(), keyboardStroke);
         return new Config(rotaryControl, m);
     }
 
+    public boolean isRotary(RawMidiEvent raw) {
+        return rotaryControl.contains(raw.getKey());
+    }
 }
