@@ -38,16 +38,34 @@ class ActionableMidiEventTest {
 
     private static Stream<Arguments> provideStringsForIsBlank() {
         var raw = new RawMidiEvent(10, 20);
-        return Stream.of(
-                Arguments.of(null, true, null, Optional.empty()),
-                Arguments.of(raw, true, null, Optional.empty()),
-                Arguments.of(null, false, null, Optional.empty()),
-                Arguments.of(raw, false, null, Optional.empty()),
-                Arguments.of(raw, false, 20, Optional.of(new ActionableMidiEvent(10, MidiAction.PRESS))),
-                Arguments.of(raw, false, 10, Optional.of(new ActionableMidiEvent(10, MidiAction.PRESS))),
-                Arguments.of(raw, false, 30, Optional.of(new ActionableMidiEvent(10, MidiAction.PRESS))),
-                // more test cases needed
+        var raw0 = new RawMidiEvent(10, 0);
+        var rawMax = new RawMidiEvent(10, ActionableMidiEvent.ROTARY_MAX);
 
+        var actionPRESS = Optional.of(new ActionableMidiEvent(10, MidiAction.PRESS));
+        var actionUP = Optional.of(new ActionableMidiEvent(10, MidiAction.UP));
+        var actionDOWN = Optional.of(new ActionableMidiEvent(10, MidiAction.DOWN));
+
+        return Stream.of(
+                // rotary null values
+                Arguments.of(raw, true, null, Optional.empty()),
+                Arguments.of(null, true, null, Optional.empty()),
+                Arguments.of(null, true, 10, Optional.empty()),
+                // button null values
+                Arguments.of(null, false, null, Optional.empty()),
+                Arguments.of(null, false, 10, Optional.empty()),
+                // button presses
+                Arguments.of(raw, false, 20, actionPRESS),
+                Arguments.of(raw, false, 10, actionPRESS),
+                Arguments.of(raw, false, 30, actionPRESS),
+                Arguments.of(raw, false, null, actionPRESS),
+                // rotary
+                Arguments.of(raw, true, 10, actionUP),
+                Arguments.of(raw, true, 30, actionDOWN),
+                Arguments.of(raw, true, 20, Optional.empty()),
+                // rotary spin down past 0
+                Arguments.of(raw0, true, 0, actionDOWN),
+                // rotary spin up past ROTARY_MAX
+                Arguments.of(rawMax, true, ActionableMidiEvent.ROTARY_MAX, actionUP)
         );
     }
 }

@@ -12,23 +12,31 @@ import java.util.Optional;
 @EqualsAndHashCode
 public class ActionableMidiEvent {
 
-    private int control;
-    private MidiAction action;
+    public static final int ROTARY_MAX = 127;
 
-    public String getKey() {
-        return String.format("%s-%s", control, action);
-    }
+    private final int control;
+    private final MidiAction action;
 
     public static Optional<ActionableMidiEvent> from(RawMidiEvent raw, Integer previousValue, Config config) {
-        if (raw == null || previousValue == null) return Optional.empty();
+        if (raw == null || config == null) return Optional.empty();
+        if (previousValue == null && config.isRotary(raw)) return Optional.empty();
 
         if (config.isRotary(raw)) { // is dial
-            if (raw.getValue() > previousValue) return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.UP));
-            if (raw.getValue() < previousValue) return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.DOWN));
-            if (previousValue == 0) return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.DOWN));
-            Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.UP));
+            if (raw.getValue() > previousValue)
+                return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.UP));
+            if (raw.getValue() < previousValue)
+                return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.DOWN));
+            if (previousValue == raw.getValue() && previousValue != 0 && previousValue != ROTARY_MAX)
+                return Optional.empty();
+            if (previousValue == 0)
+                return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.DOWN));
+            return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.UP));
         }
         // is button press
         return Optional.of(new ActionableMidiEvent(raw.getControl(), MidiAction.PRESS));
+    }
+
+    public String getKey() {
+        return String.format("%s-%s", control, action);
     }
 }
