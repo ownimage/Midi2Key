@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ownimage.midi2key.core.Config;
 import com.ownimage.midi2key.model.KeyboardStroke;
-import com.ownimage.midi2key.model.MidiEvent;
+import com.ownimage.midi2key.model.RawMidiEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ConfigTest {
 
@@ -45,7 +45,7 @@ class ConfigTest {
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
         var expectedAfter = "{\"rotaryControl\":[1],\"mapping\":{}}";
         // when
-        var after = underTest.addRotaryControl(new MidiEvent(1, 10));
+        var after = underTest.addRotaryControl(new RawMidiEvent(1, 10));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
@@ -60,8 +60,8 @@ class ConfigTest {
         var expectedAfter = "{\"rotaryControl\":[1,2],\"mapping\":{}}";
         // when
         var after = underTest
-                .addRotaryControl(new MidiEvent(1, 10))
-                .addRotaryControl(new MidiEvent(2, 10));
+                .addRotaryControl(new RawMidiEvent(1, 10))
+                .addRotaryControl(new RawMidiEvent(2, 10));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
@@ -75,10 +75,10 @@ class ConfigTest {
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);
         var config = underTest
-                .addRotaryControl(new MidiEvent(1, 10))
-                .addRotaryControl(new MidiEvent(2, 10))
-                .addMapping(new MidiEvent(10, 20), new KeyboardStroke(true, true, false, (short)19))
-                .addMapping(new MidiEvent(11, 21), new KeyboardStroke(true, true, false, (short)120));
+                .addRotaryControl(new RawMidiEvent(1, 10))
+                .addRotaryControl(new RawMidiEvent(2, 10))
+                .addMapping(new RawMidiEvent(10, 20), new KeyboardStroke(true, true, false, (short)19))
+                .addMapping(new RawMidiEvent(11, 21), new KeyboardStroke(true, true, false, (short)120));
         var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19},\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120}}}";
         // when
         config.save(testFile);
@@ -107,13 +107,42 @@ class ConfigTest {
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
         var expectedAfter = "{\"rotaryControl\":[],\"mapping\":{\"1\":{\"control\":true,\"alt\":false,\"shift\":true,\"code\":12}}}";
         // when
-        var after = underTest.addMapping(new MidiEvent(1, 2), new KeyboardStroke(true, false, true, (short) 12));
+        var after = underTest.addMapping(new RawMidiEvent(1, 2), new KeyboardStroke(true, false, true, (short) 12));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
         assertEquals(expectedOriginal, actualOriginal);
         assertEquals(expectedAfter, actualAfter);
 
+    }
+
+    @Test
+    void testIsRotaryOnSameObject() {
+        // given
+        var raw = new RawMidiEvent(10, 20);
+        var config = underTest.addRotaryControl(raw);
+        // when - then
+        assertTrue(config.isRotary(raw));
+    }
+
+    @Test
+    void testIsRotaryEqualObject() {
+        // given
+        var raw1 = new RawMidiEvent(10, 20);
+        var raw2 = new RawMidiEvent(10, 20);
+        var config = underTest.addRotaryControl(raw1);
+        // when - then
+        assertTrue(config.isRotary(raw2));
+    }
+
+    @Test
+    void testIsRotaryOnDifferentObject() {
+        // given
+        var raw1 = new RawMidiEvent(10, 20);
+        var raw2 = new RawMidiEvent(11, 21);
+        var config = underTest.addRotaryControl(raw1);
+        // when - then
+        assertFalse(config.isRotary(raw2));
     }
 
     private String fileToString(File file) throws IOException {
@@ -130,4 +159,5 @@ class ConfigTest {
             e.printStackTrace();
         }
     }
+
 }
