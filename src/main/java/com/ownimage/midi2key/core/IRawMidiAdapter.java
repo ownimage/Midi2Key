@@ -1,6 +1,6 @@
 package com.ownimage.midi2key.core;
 
-public interface IMidiAdapter {
+public interface IRawMidiAdapter {
 
     void start();
 

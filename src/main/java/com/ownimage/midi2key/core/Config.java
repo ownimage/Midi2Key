@@ -53,7 +53,7 @@ public class Config {
         if (rawMidiEvent == null) return this;
 
         List<Integer> rc = new ArrayList<>(rotaryControl);
-        rc.add(rawMidiEvent.getKey());
+        rc.add(rawMidiEvent.getControl());
         return new Config(rc, mapping);
     }
 
@@ -64,6 +64,6 @@ public class Config {
     }
 
     public boolean isRotary(RawMidiEvent raw) {
-        return rotaryControl.contains(raw.getKey());
+        return rotaryControl.contains(raw.getControl());
     }
 }

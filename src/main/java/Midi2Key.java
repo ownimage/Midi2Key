@@ -1,3 +1,7 @@
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeInputEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+
 import javax.sound.midi.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -77,6 +81,9 @@ public class Midi2Key
         public void close() {}
 
         public void keypress() {
+//            NativeInputEvent x;
+//            GlobalScreen.postNativeEvent(x);
+
             try {
                 Robot robot = new Robot();
 

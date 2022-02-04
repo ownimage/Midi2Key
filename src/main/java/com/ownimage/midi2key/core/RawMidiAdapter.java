@@ -1,13 +1,15 @@
 package com.ownimage.midi2key.core;
 
+import com.ownimage.midi2key.model.RawMidiEvent;
+
 import javax.sound.midi.*;
 import java.util.List;
 
-public class MidiAdapter implements IMidiAdapter {
+public class RawMidiAdapter implements IRawMidiAdapter {
 
-    private IMidiEventReceiver midiEventReceiver;
+    private IRawMidiEventReceiver midiEventReceiver;
 
-    public MidiAdapter(IMidiEventReceiver midiEventReceiver) {
+    public RawMidiAdapter(IRawMidiEventReceiver midiEventReceiver) {
         this.midiEventReceiver = midiEventReceiver;
     }
 
@@ -72,7 +74,7 @@ public class MidiAdapter implements IMidiAdapter {
             // clicked or not.
             var control = Integer.parseInt(String.valueOf(aMsg[1]));
             var value = Integer.parseInt(String.valueOf(aMsg[2]));
-            var midiEvent = new com.ownimage.midi2key.model.MidiEvent(control, value);
+            var midiEvent = new RawMidiEvent(control, value);
             midiEventReceiver.receive(midiEvent);
             System.out.println();
 //            keypress();

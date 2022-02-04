@@ -77,9 +77,9 @@ class ConfigTest {
         var config = underTest
                 .addRotaryControl(new RawMidiEvent(1, 10))
                 .addRotaryControl(new RawMidiEvent(2, 10))
-                .addMapping(new RawMidiEvent(10, 20), new KeyboardStroke(true, true, false, (short)19))
-                .addMapping(new RawMidiEvent(11, 21), new KeyboardStroke(true, true, false, (short)120));
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19},\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120}}}";
+                .addMapping(new RawMidiEvent(10, 20), new KeyboardStroke(true, true, false, (char)19))
+                .addMapping(new RawMidiEvent(11, 21), new KeyboardStroke(true, true, false, (char)120));
+        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"11\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyChar\":120},\"10\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyChar\":19}}}";
         // when
         config.save(testFile);
         // then
@@ -92,7 +92,7 @@ class ConfigTest {
         // given
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);;
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"11\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":120},\"10\":{\"control\":true,\"alt\":true,\"shift\":false,\"code\":19}}}";
+        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"11\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyChar\":120},\"10\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyChar\":19}}}";
         stringToFile(expected,testFile);
         // when
         var config = Config.read(testFile);
@@ -105,9 +105,9 @@ class ConfigTest {
     public void testAddMapping() {
         // given
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
-        var expectedAfter = "{\"rotaryControl\":[],\"mapping\":{\"1\":{\"control\":true,\"alt\":false,\"shift\":true,\"code\":12}}}";
+        var expectedAfter = "{\"rotaryControl\":[],\"mapping\":{\"1\":{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyChar\":12}}}";
         // when
-        var after = underTest.addMapping(new RawMidiEvent(1, 2), new KeyboardStroke(true, false, true, (short) 12));
+        var after = underTest.addMapping(new RawMidiEvent(1, 2), new KeyboardStroke(true, false, true, (char) 12));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then

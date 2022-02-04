@@ -1,11 +1,15 @@
 package com.ownimage.midi2key.core;
 
-import com.ownimage.midi2key.model.MidiEvent;
+import com.ownimage.midi2key.model.RawMidiEvent;
 
-public class Midi2Key implements IMidiEventReceiver {
+public class Midi2Key implements IRawMidiEventReceiver {
+
+    static {
+        KeyboardListener.instance();
+    }
 
     private Config config = Config.builder().build();
-    private IMidiAdapter midiAdapter= new MidiAdapter(this);
+    private IRawMidiAdapter midiAdapter= new RawMidiAdapter(this);
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Hello world");
@@ -16,12 +20,12 @@ public class Midi2Key implements IMidiEventReceiver {
     private Midi2Key() {
     }
 
-    public Midi2Key(IMidiAdapter midiAdapter) {
+    public Midi2Key(IRawMidiAdapter midiAdapter) {
         this.midiAdapter = midiAdapter;
     }
 
     @Override
-    public void receive(MidiEvent midiEvent) {
+    public void receive(RawMidiEvent midiEvent) {
         System.out.println("####### " + midiEvent);
     }
 

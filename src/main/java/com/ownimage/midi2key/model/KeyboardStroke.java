@@ -8,8 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class KeyboardStroke {
-    private boolean control;
+    private boolean ctrl;
     private boolean alt;
     private boolean shift;
-    private short code;
+    private int keyChar;
 }

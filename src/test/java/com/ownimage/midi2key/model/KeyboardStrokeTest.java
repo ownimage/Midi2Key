@@ -15,14 +15,14 @@ class KeyboardStrokeTest {
 
     @BeforeEach
     public void before() {
-        underTest= new KeyboardStroke(true, false, true, (short) 11);
+        underTest= new KeyboardStroke(true, false, true, (char) 11);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     @Test
     public void testEquals() {
         // given
-        var compare = new KeyboardStroke(true, false, true, (short) 11);
+        var compare = new KeyboardStroke(true, false, true, (char) 11);
         // then
         assertTrue(compare.equals(underTest));
     }
@@ -30,7 +30,7 @@ class KeyboardStrokeTest {
     @Test
     public void testNotEquals() {
         // given
-        var compare = new KeyboardStroke(false, false, true, (short) 11);
+        var compare = new KeyboardStroke(false, false, true, (char) 11);
         // then
         assertFalse(compare.equals(underTest));
     }
@@ -38,7 +38,7 @@ class KeyboardStrokeTest {
     @Test
     public void testToJson() {
         // given
-        var expected = "{\"control\":true,\"alt\":false,\"shift\":true,\"code\":11}";
+        var expected = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyChar\":11}";
         // when
         var actual = gson.toJson(underTest);
         // then
@@ -48,7 +48,7 @@ class KeyboardStrokeTest {
     @Test
     public void testFromJson() {
         // given
-        var from = "{\"control\":true,\"alt\":false,\"shift\":true,\"code\":11}";
+        var from = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyChar\":11}";
         // when
         var actual = gson.fromJson(from, KeyboardStroke.class);
         // then
