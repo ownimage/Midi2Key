@@ -4,7 +4,7 @@
 //import com.github.kwhat.jnativehook.NativeHookException;
 //import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 //import com.ownimage.midi2key.model.KeyboardStroke;
-//import com.ownimage.midi2key.model.RawMidiEvent;
+//import com.ownimage.midi2key.adapter.RawMidiEvent;
 //
 //public class AbstractMenu {
 //

@@ -1,8 +1,9 @@
 package com.ownimage.midi2key.core;
 
 import com.google.gson.Gson;
-import com.ownimage.midi2key.model.KeyboardStroke;
-import com.ownimage.midi2key.model.RawMidiEvent;
+import com.ownimage.midi2key.model.MidiAction;
+import com.ownimage.midi2key.model.KeyboardAction;
+import com.ownimage.midi2key.adapter.AdapterMidiEvent;
 import lombok.*;
 
 import java.io.File;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class Config {
 
     private List<Integer> rotaryControl;
-    private Map<String, KeyboardStroke> mapping;
+    private Map<String, KeyboardAction> mapping;
 
     public static ConfigBuilder builder() {
         return new Config(new ArrayList<>(), new HashMap<>()).toBuilder();
@@ -49,21 +50,19 @@ public class Config {
         }
     }
 
-    public Config addRotaryControl(RawMidiEvent rawMidiEvent) {
-        if (rawMidiEvent == null) return this;
-
+    public Config addRotaryControl(int control) {
         List<Integer> rc = new ArrayList<>(rotaryControl);
-        rc.add(rawMidiEvent.getControl());
+        rc.add(control);
         return new Config(rc, mapping);
     }
 
-    public Config addMapping(RawMidiEvent rawMidiEvent, KeyboardStroke keyboardStroke) {
+    public Config addMapping(MidiAction midiEvent, KeyboardAction keyboardAction) {
         var m = new HashMap<>(mapping);
-        m.put(rawMidiEvent.getKey(), keyboardStroke);
+        m.put(midiEvent.getKey(), keyboardAction);
         return new Config(rotaryControl, m);
     }
 
-    public boolean isRotary(RawMidiEvent raw) {
+    public boolean isRotary(AdapterMidiEvent raw) {
         return rotaryControl.contains(raw.getControl());
     }
 }

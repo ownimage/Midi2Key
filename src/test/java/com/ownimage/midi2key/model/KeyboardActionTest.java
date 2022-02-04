@@ -7,22 +7,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class KeyboardStrokeTest {
+class KeyboardActionTest {
 
-    private KeyboardStroke underTest;
+    private KeyboardAction underTest;
 
     Gson gson;
 
     @BeforeEach
     public void before() {
-        underTest= new KeyboardStroke(true, false, true, (char) 11);
+        underTest= new KeyboardAction(true, false, true, (char) 11);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     @Test
     public void testEquals() {
         // given
-        var compare = new KeyboardStroke(true, false, true, (char) 11);
+        var compare = new KeyboardAction(true, false, true, (char) 11);
         // then
         assertTrue(compare.equals(underTest));
     }
@@ -30,7 +30,7 @@ class KeyboardStrokeTest {
     @Test
     public void testNotEquals() {
         // given
-        var compare = new KeyboardStroke(false, false, true, (char) 11);
+        var compare = new KeyboardAction(false, false, true, (char) 11);
         // then
         assertFalse(compare.equals(underTest));
     }
@@ -38,7 +38,7 @@ class KeyboardStrokeTest {
     @Test
     public void testToJson() {
         // given
-        var expected = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyChar\":11}";
+        var expected = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":11}";
         // when
         var actual = gson.toJson(underTest);
         // then
@@ -48,9 +48,9 @@ class KeyboardStrokeTest {
     @Test
     public void testFromJson() {
         // given
-        var from = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyChar\":11}";
+        var from = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":11}";
         // when
-        var actual = gson.fromJson(from, KeyboardStroke.class);
+        var actual = gson.fromJson(from, KeyboardAction.class);
         // then
         assertEquals(underTest, actual);
     }

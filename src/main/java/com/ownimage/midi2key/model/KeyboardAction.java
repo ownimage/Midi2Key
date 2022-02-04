@@ -7,9 +7,9 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @EqualsAndHashCode
-public class KeyboardStroke {
+public class KeyboardAction {
     private boolean ctrl;
     private boolean alt;
     private boolean shift;
-    private int keyChar;
+    private int keyCode;
 }
