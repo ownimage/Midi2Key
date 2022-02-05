@@ -1,21 +1,28 @@
 package com.ownimage.midi2key.menu;
 
-import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.VC_M;
-import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.VC_X;
+import com.ownimage.midi2key.core.ConfigChanger;
+import org.jetbrains.annotations.NotNull;
+
+import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*;
 
 public class MenuMain extends AbstractMenu {
 
-    public MenuMain(MenuInputProvider menuInputProvider) {
-        super(menuInputProvider);
-        addMenuMap(VC_M, new MenuM(menuInputProvider));
+    public MenuMain(
+            @NotNull MenuInputProvider menuInputProvider,
+            @NotNull ConfigChanger configChanger
+    ) {
+        super(menuInputProvider, configChanger);
+        addMenuMap(VC_S, new MenuSaveConfig(menuInputProvider, configChanger));
+        addMenuMap(VC_R, new MenuSetRotary(menuInputProvider, configChanger));
+        addMenuMap(VC_M, new MenuMapMIDIEvent(menuInputProvider, configChanger));
     }
 
     @Override
     protected String getPrompt() {
         return "Main menu\n" +
                 "S - Config Save\n" +
-                "M - Map\n" +
-                "X - Exit";
+                "R - Set MIDI control as Rotary\n" +
+                "M - Map MIDI control to Key\n";
     }
 
 

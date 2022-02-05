@@ -50,9 +50,9 @@ public class Config {
         }
     }
 
-    public Config addRotaryControl(int control) {
+    public Config addRotaryControl(MidiAction control) {
         List<Integer> rc = new ArrayList<>(rotaryControl);
-        rc.add(control);
+        rc.add(control.getControl());
         return new Config(rc, mapping);
     }
 
@@ -62,6 +62,7 @@ public class Config {
         return new Config(rotaryControl, m);
     }
 
+    // TODO dont like the AdapterMidiEvent leaking here
     public boolean isRotary(AdapterMidiEvent raw) {
         return rotaryControl.contains(raw.getControl());
     }

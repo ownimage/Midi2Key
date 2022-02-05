@@ -6,15 +6,17 @@ import com.ownimage.midi2key.menu.MenuInputProvider;
 import com.ownimage.midi2key.menu.MenuMain;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
+import com.ownimage.midi2key.util.WaitForNextValue;
 
-public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, MenuInputProvider, ConfigSuppier {
+import java.util.function.Consumer;
+
+public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, MenuInputProvider, ConfigChanger {
 
     private Config config = Config.builder().build();
     private MidiAdapter midiAdapter = new MidiAdapter(this, this, true);
     private KeyboardAdapter keyboardAdapter = new KeyboardAdapter(this, true);
 
-    private KeyboardAction lastKeyboardAction;
-    private Object keyboardActionLock = new Object();
+    private WaitForNextValue<KeyboardAction> lastKeyboardAction = new WaitForNextValue<>();
 
     private Midi2Key() {
     }
@@ -34,7 +36,7 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     }
 
     private synchronized void start() {
-        var menu = new MenuMain(this);
+        var menu = new MenuMain(this, this);
         menu.run();
     }
 
@@ -45,32 +47,27 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
 
     @Override
     public void receive(KeyboardAction keyboardAction) {
-        System.out.println("Midi2Key receive: " + keyboardAction);
-        lastKeyboardAction = keyboardAction;
-        synchronized (keyboardActionLock) {
-            keyboardActionLock.notify();
-        }
+        //sSystem.out.println("Midi2Key receive: " + keyboardAction);
+        lastKeyboardAction.value(keyboardAction);
     }
 
     @Override
     public KeyboardAction getKeyboardAction() {
-        KeyboardAction result = null;
-        do {
-            try {
-                lastKeyboardAction = null;
-                synchronized (keyboardActionLock) {
-                    keyboardActionLock.wait();
-                }
-                result = lastKeyboardAction;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } while (result == null);
-        return result;
+        return lastKeyboardAction.nextValue();
     }
 
     @Override
     public MidiAction getMidiAction() {
         return null;
+    }
+
+    @Override
+    public void config(Config config) {
+        // TODO is this used
+    }
+
+    @Override
+    public void saveConfig() {
+        System.out.println("Midi2Key::saveConfig not yet implemented");
     }
 }

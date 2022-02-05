@@ -63,7 +63,7 @@ public class MidiAdapterTest implements MidiActionReceiver, ConfigSuppier {
     @MethodSource("testSend_parameters")
     public void testSend(boolean isRotary, int control, Integer previousValue, int value, MidiAction expected) throws InvalidMidiDataException {
         // given
-        if (isRotary) config = config.addRotaryControl(control);
+        if (isRotary) config = config.addRotaryControl(new MidiAction(control, UP));
         if (previousValue != null) underTest.send(shortMessage(control, previousValue), 0L);
         // when
         underTest.send(shortMessage(control, value), 0L);

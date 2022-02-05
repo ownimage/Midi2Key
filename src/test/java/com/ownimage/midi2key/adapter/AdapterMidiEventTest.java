@@ -97,7 +97,7 @@ class AdapterMidiEventTest {
     public void toMidiAction(@NotNull AdapterMidiEvent raw, boolean isRotary, Integer previous, Optional<MidiAction> expected) {
         // given
         var config = Config.builder().build();
-        if (isRotary) config = config.addRotaryControl(raw.getControl());
+        if (isRotary) config = config.addRotaryControl(new MidiAction(raw.getControl(), UP));
         // when - then
         assertEquals(expected, raw.toMidiAction(previous, config));
     }

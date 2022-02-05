@@ -1,5 +1,6 @@
 package com.ownimage.midi2key.menu;
 
+import com.ownimage.midi2key.core.ConfigChanger;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
 import org.jetbrains.annotations.NotNull;
@@ -13,12 +14,17 @@ public class AbstractMenu {
 
     private static String SEPARATOR = "##################################################################";
 
-    private MenuInputProvider menuInputProvider;
+    protected MenuInputProvider menuInputProvider;
+    protected ConfigChanger configChanger;
     private HashMap<Integer, AbstractMenu> menuMap = new HashMap<>();
     private Integer exitKeyCode = VC_X;
 
-    public AbstractMenu(MenuInputProvider menuInputProvider) {
+    public AbstractMenu(
+            @NotNull MenuInputProvider menuInputProvider,
+            @NotNull ConfigChanger configChanger
+    ) {
         this.menuInputProvider = menuInputProvider;
+        this.configChanger = configChanger;
     }
 
     protected MidiAction getMidiAction() {
@@ -34,16 +40,20 @@ public class AbstractMenu {
     }
 
     protected void printPrompt() {
-        System.out.println(SEPARATOR);
-        System.out.println(getPrompt());
+        printSeparator();
+        System.out.print(getPrompt());
+        System.out.println("X - Exit this menu");
     }
 
-    public void run(){
+    protected void printSeparator() {
+        System.out.println(SEPARATOR);
+    }
+
+    public void run() {
         Integer keyCode;
         do {
             printPrompt();
             keyCode = getKeyboardAction().getKeyCode();
-            System.out.println("Main menu:  keyCode " + keyCode);
             menuFromKeyCode(keyCode).ifPresent(m -> m.run());
         } while (keyCode != exitKeyCode);
     }

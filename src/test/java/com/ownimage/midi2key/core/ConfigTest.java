@@ -49,7 +49,7 @@ class ConfigTest {
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
         var expectedAfter = "{\"rotaryControl\":[1],\"mapping\":{}}";
         // when
-        var after = underTest.addRotaryControl(1);
+        var after = underTest.addRotaryControl(new MidiAction(1, UP));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
@@ -64,8 +64,8 @@ class ConfigTest {
         var expectedAfter = "{\"rotaryControl\":[1,2],\"mapping\":{}}";
         // when
         var after = underTest
-                .addRotaryControl(1)
-                .addRotaryControl(2);
+                .addRotaryControl(new MidiAction(1, UP))
+                .addRotaryControl(new MidiAction(2, UP));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then
@@ -79,8 +79,8 @@ class ConfigTest {
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);
         var config = underTest
-                .addRotaryControl(1)
-                .addRotaryControl(2)
+                .addRotaryControl(new MidiAction(1, UP))
+                .addRotaryControl(new MidiAction(2, UP))
                 .addMapping(new MidiAction(10, PRESS), new KeyboardAction(true, true, false, (char) 19))
                 .addMapping(new MidiAction(11, UP), new KeyboardAction(true, true, false, (char) 120));
         var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10-PRESS\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19},\"11-UP\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120}}}";
@@ -131,10 +131,10 @@ class ConfigTest {
         var t5 = new AdapterMidiEvent(5, 20);
         // when
         var config = underTest
-                .addRotaryControl(1)
-                .addRotaryControl(2)
-                .addRotaryControl(3)
-                .addRotaryControl(4);
+                .addRotaryControl(new MidiAction(1, UP))
+                .addRotaryControl(new MidiAction(2, UP))
+                .addRotaryControl(new MidiAction(3, UP))
+                .addRotaryControl(new MidiAction(4, UP));
         // then
         assertTrue(config.isRotary(t1));
         assertTrue(config.isRotary(t2));
@@ -147,7 +147,7 @@ class ConfigTest {
     @MethodSource("testIsRotary_parameters")
     void testIsRotary(String name, AdapterMidiEvent add, AdapterMidiEvent test, boolean expected) {
         // given - when
-        var config = underTest.addRotaryControl(add.getControl());
+        var config = underTest.addRotaryControl(new MidiAction(add.getControl(), UP));
         // then
         assertEquals(expected, config.isRotary(test));
     }
