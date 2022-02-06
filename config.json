@@ -1,0 +1,24 @@
+{
+  "rotaryControl": [
+    1
+  ],
+  "mapping": {
+    "1-DOWN": {
+      "ctrl": false,
+      "alt": false,
+      "shift": false,
+      "keyCode": 26,
+      "description": "Open Bracket"
+    },
+    "1-UP": {
+      "ctrl": false,
+      "alt": false,
+      "shift": false,
+      "keyCode": 27,
+      "description": "Close Bracket"
+    }
+  },
+  "labels": {
+    "1": "A1R"
+  }
+}

@@ -18,6 +18,7 @@ public class MenuMapMIDIEvent extends AbstractMenu {
                 "Create MIDI event:\n";
     }
 
+    @Override
     public void run() {
         try {
             configChanger.stopMapping();

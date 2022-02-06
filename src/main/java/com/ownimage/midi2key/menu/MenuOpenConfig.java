@@ -3,9 +3,9 @@ package com.ownimage.midi2key.menu;
 import com.ownimage.midi2key.core.ConfigChanger;
 import org.jetbrains.annotations.NotNull;
 
-public class MenuSaveConfig extends AbstractMenu {
+public class MenuOpenConfig extends AbstractMenu {
 
-    public MenuSaveConfig(
+    public MenuOpenConfig(
             @NotNull MenuInputProvider menuInputProvider,
             @NotNull ConfigChanger configChanger
     ) {
@@ -15,8 +15,8 @@ public class MenuSaveConfig extends AbstractMenu {
     @Override
     public void run() {
         printSeparator();
-        configChanger.saveConfig();
-        System.out.println("Config Saved");
+        configChanger.openConfig();
+        System.out.println("Config Opened");
         printSeparator();
     }
 }

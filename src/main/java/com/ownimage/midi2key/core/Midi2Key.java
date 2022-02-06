@@ -7,7 +7,10 @@ import com.ownimage.midi2key.menu.MenuMain;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
 import com.ownimage.midi2key.util.WaitForNextValue;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, MenuInputProvider, ConfigChanger {
 
@@ -80,7 +83,8 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     @Override
     public void saveConfig() {
         System.out.println("Midi2Key::saveConfig not yet implemented");
-        System.out.println("config = " + config.toJson());
+        System.out.println("config = " + config.toJson(false));
+        config.save(new File(Config.DEFAULT_FILENAME), true);
     }
 
     @Override
@@ -91,5 +95,12 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     @Override
     public void startMapping() {
         mapMidiEvents = true;
+    }
+
+    @Override
+    @SneakyThrows
+    public void openConfig() {
+        var c = config.open(new File(Config.DEFAULT_FILENAME));
+        config(c);
     }
 }

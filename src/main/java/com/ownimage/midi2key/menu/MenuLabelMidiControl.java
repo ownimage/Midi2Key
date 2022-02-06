@@ -3,9 +3,11 @@ package com.ownimage.midi2key.menu;
 import com.ownimage.midi2key.core.ConfigChanger;
 import org.jetbrains.annotations.NotNull;
 
-public class MenuSetRotary extends AbstractMenu {
+import java.util.Scanner;
 
-    public MenuSetRotary(
+public class MenuLabelMidiControl extends AbstractMenu {
+
+    public MenuLabelMidiControl(
             @NotNull MenuInputProvider menuInputProvider,
             @NotNull ConfigChanger configChanger
     ) {
@@ -22,9 +24,11 @@ public class MenuSetRotary extends AbstractMenu {
     public void run() {
         printPrompt(false);
         var midiAction = menuInputProvider.getMidiAction();
-        var config = configChanger.config().addRotaryControl(midiAction);
+        System.out.println("Enter Label");
+        var label = new Scanner(System.in).next();
+        var config = configChanger.config().addLabel(midiAction, label);
         configChanger.config(config);
-        System.out.println("MIDI control marked as Rotary");
+        System.out.println("MIDI Label added");
         printSeparator();
     }
 }

@@ -20,28 +20,33 @@ import java.util.*;
 @Builder(toBuilder = true)
 public class Config {
 
-    private List<Integer> rotaryControl;
-    private Map<String, KeyboardAction> mapping;
+    public final static String DEFAULT_FILENAME = "config.json";
+
+    private TreeSet<Integer> rotaryControl;
+    private TreeMap<String, KeyboardAction> mapping;
+    private TreeMap<Integer, String> labels;
 
     public static ConfigBuilder builder() {
-        return new Config(new ArrayList<>(), new HashMap<>()).toBuilder();
+        return new Config(new TreeSet<>(), new TreeMap<>(), new TreeMap<>()).toBuilder();
     }
 
-    public static Config read(@NotNull File file) throws IOException {
+    public static Config open(@NotNull File file) throws IOException {
         String json = Files.readString(file.toPath());
         Gson gson = new Gson();
         return gson.fromJson(json, Config.class);
     }
 
-    public String toJson(){
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    public String toJson(boolean prettyPrint){
+        Gson gson = prettyPrint
+        ? new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
+        : new GsonBuilder().disableHtmlEscaping().create();
         return gson.toJson(this);
     }
 
-    public void save(@NotNull File file) {
+    public void save(@NotNull File file, boolean prettyPrint) {
         try {
             FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(toJson());
+            fileWriter.write(toJson(prettyPrint));
             fileWriter.flush();
             fileWriter.close();
         } catch (IOException e) {
@@ -50,15 +55,15 @@ public class Config {
     }
 
     public Config addRotaryControl(@NotNull MidiAction control) {
-        List<Integer> rc = new ArrayList<>(rotaryControl);
+        TreeSet<Integer> rc = new TreeSet<>(rotaryControl);
         rc.add(control.getControl());
-        return new Config(rc, mapping);
+        return new Config(rc, mapping, labels);
     }
 
     public Config addMapping(@NotNull MidiAction midiEvent, @NotNull KeyboardAction keyboardAction) {
-        var m = new HashMap<>(mapping);
+        var m = new TreeMap<>(mapping);
         m.put(midiEvent.getKey(), keyboardAction);
-        return new Config(rotaryControl, m);
+        return new Config(rotaryControl, m, labels);
     }
 
     public Optional<KeyboardAction>map(@NotNull MidiAction midiEvent) {
@@ -68,5 +73,11 @@ public class Config {
     // TODO dont like the AdapterMidiEvent leaking here
     public boolean isRotary(AdapterMidiEvent raw) {
         return rotaryControl.contains(raw.getControl());
+    }
+
+    public Config addLabel(MidiAction midiAction, String label) {
+        var l = new TreeMap<>(labels);
+        l.put(midiAction.getControl(), label);
+        return new Config(rotaryControl, mapping, l);
     }
 }
