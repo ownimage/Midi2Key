@@ -5,4 +5,8 @@ public interface ConfigChanger extends ConfigSuppier {
     void config(Config config);
 
     void saveConfig();
+
+    void stopMapping();
+
+    void startMapping();
 }

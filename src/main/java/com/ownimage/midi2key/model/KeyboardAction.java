@@ -12,4 +12,5 @@ public class KeyboardAction {
     private boolean alt;
     private boolean shift;
     private int keyCode;
+    private String description;
 }

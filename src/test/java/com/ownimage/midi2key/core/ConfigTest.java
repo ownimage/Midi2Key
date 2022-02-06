@@ -81,9 +81,9 @@ class ConfigTest {
         var config = underTest
                 .addRotaryControl(new MidiAction(1, UP))
                 .addRotaryControl(new MidiAction(2, UP))
-                .addMapping(new MidiAction(10, PRESS), new KeyboardAction(true, true, false, (char) 19))
-                .addMapping(new MidiAction(11, UP), new KeyboardAction(true, true, false, (char) 120));
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10-PRESS\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19},\"11-UP\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120}}}";
+                .addMapping(new MidiAction(10, PRESS), new KeyboardAction(true, true, false, (char) 19, "DESC-A"))
+                .addMapping(new MidiAction(11, UP), new KeyboardAction(true, true, false, (char) 120, "DESC-B"));
+        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10-PRESS\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19,\"description\":\"DESC-A\"},\"11-UP\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120,\"description\":\"DESC-B\"}}}";
         // when
         config.save(testFile);
         // then
@@ -110,9 +110,9 @@ class ConfigTest {
     public void testAddMapping() {
         // given
         var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{}}";
-        var expectedAfter = "{\"rotaryControl\":[],\"mapping\":{\"1-DOWN\":{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":12}}}";
+        var expectedAfter = "{\"rotaryControl\":[],\"mapping\":{\"1-DOWN\":{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":12,\"description\":\"DESC\"}}}";
         // when
-        var after = underTest.addMapping(new MidiAction(1, DOWN), new KeyboardAction(true, false, true, (char) 12));
+        var after = underTest.addMapping(new MidiAction(1, DOWN), new KeyboardAction(true, false, true, (char) 12, "DESC"));
         var actualOriginal = gson.toJson(underTest);
         var actualAfter = gson.toJson(after);
         // then

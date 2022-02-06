@@ -19,11 +19,11 @@ public class MenuSetRotary extends AbstractMenu {
     }
 
     public void run() {
-        printPrompt();
+        printPrompt(false);
         var midiAction = menuInputProvider.getMidiAction();
         var config = configChanger.config().addRotaryControl(midiAction);
         configChanger.config(config);
-        System.out.println("MIDI Action mapped");
+        System.out.println("MIDI Control marked as Rotary");
         printSeparator();
     }
 }

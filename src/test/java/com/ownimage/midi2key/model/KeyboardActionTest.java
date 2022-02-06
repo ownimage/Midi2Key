@@ -15,14 +15,14 @@ class KeyboardActionTest {
 
     @BeforeEach
     public void before() {
-        underTest= new KeyboardAction(true, false, true, (char) 11);
+        underTest= new KeyboardAction(true, false, true, (char) 11, "DESC");
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     @Test
     public void testEquals() {
         // given
-        var compare = new KeyboardAction(true, false, true, (char) 11);
+        var compare = new KeyboardAction(true, false, true, (char) 11, "DESC");
         // then
         assertTrue(compare.equals(underTest));
     }
@@ -30,7 +30,7 @@ class KeyboardActionTest {
     @Test
     public void testNotEquals() {
         // given
-        var compare = new KeyboardAction(false, false, true, (char) 11);
+        var compare = new KeyboardAction(false, false, true, (char) 11, "DESC");
         // then
         assertFalse(compare.equals(underTest));
     }
@@ -38,7 +38,7 @@ class KeyboardActionTest {
     @Test
     public void testToJson() {
         // given
-        var expected = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":11}";
+        var expected = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":11,\"description\":\"DESC\"}";
         // when
         var actual = gson.toJson(underTest);
         // then
@@ -48,7 +48,7 @@ class KeyboardActionTest {
     @Test
     public void testFromJson() {
         // given
-        var from = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":11}";
+        var from = "{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":11,\"description\":\"DESC\"}";
         // when
         var actual = gson.fromJson(from, KeyboardAction.class);
         // then

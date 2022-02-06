@@ -32,10 +32,10 @@ public class MidiAdapterTest implements MidiActionReceiver, ConfigSuppier {
 
         return Stream.of(
                 // non rotary always fires regardless of previous value
-                Arguments.of(false, control, null, 10, press),
-                Arguments.of(false, control, 5, 10, press),
-                Arguments.of(false, control, 10, 10, press),
-                Arguments.of(false, control, 20, 10, press),
+                Arguments.of(false, control, null, 0, press),
+                Arguments.of(false, control, 5, 0, press),
+                Arguments.of(false, control, 10, 0, press),
+                Arguments.of(false, control, 20, 0, press),
                 // rotary null
                 Arguments.of(true, control, null, 20, null),
                 Arguments.of(true, control, null, 0, null),

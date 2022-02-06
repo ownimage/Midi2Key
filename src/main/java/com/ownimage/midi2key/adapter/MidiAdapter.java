@@ -5,6 +5,7 @@ import com.ownimage.midi2key.core.MidiActionReceiver;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sound.midi.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class MidiAdapter implements Receiver {
     private MidiActionReceiver midiEventReceiver;
     private ConfigSuppier configSuppier;
     private HashMap<Integer, Integer> previousValues;
+    private List<MidiDevice> devices = new ArrayList<>();
 
     public MidiAdapter(
             @NotNull MidiActionReceiver midiEventReceiver,
@@ -42,10 +44,15 @@ public class MidiAdapter implements Receiver {
                 trans.setReceiver(this);
 
                 device.open();
+                devices.add(device);
                 System.out.println(device.getDeviceInfo() + " Was Opened");
             } catch (MidiUnavailableException e) {
             }
         }
+    }
+
+    public void stop() {
+        devices.forEach(d -> d.close());
     }
 
     public void send(MidiMessage msg, long timeStamp) {

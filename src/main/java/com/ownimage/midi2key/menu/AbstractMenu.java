@@ -39,10 +39,10 @@ public class AbstractMenu {
         return "";
     }
 
-    protected void printPrompt() {
+    protected void printPrompt(boolean addExitThisMenuOption) {
         printSeparator();
         System.out.print(getPrompt());
-        System.out.println("X - Exit this menu");
+        if (addExitThisMenuOption) System.out.println("X - Exit this menu");
     }
 
     protected void printSeparator() {
@@ -52,7 +52,7 @@ public class AbstractMenu {
     public void run() {
         Integer keyCode;
         do {
-            printPrompt();
+            printPrompt(true);
             keyCode = getKeyboardAction().getKeyCode();
             menuFromKeyCode(keyCode).ifPresent(m -> m.run());
         } while (keyCode != exitKeyCode);

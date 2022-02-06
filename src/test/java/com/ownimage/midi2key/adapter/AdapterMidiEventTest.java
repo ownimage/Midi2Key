@@ -35,10 +35,10 @@ class AdapterMidiEventTest {
                 // rotary null values
                 Arguments.of(raw, true, null, Optional.empty()),
                 // button presses
-                Arguments.of(raw, false, 20, actionPRESS),
-                Arguments.of(raw, false, 10, actionPRESS),
-                Arguments.of(raw, false, 30, actionPRESS),
-                Arguments.of(raw, false, null, actionPRESS),
+                Arguments.of(raw0, false, 20, actionPRESS),
+                Arguments.of(raw0, false, 10, actionPRESS),
+                Arguments.of(raw0, false, 30, actionPRESS),
+                Arguments.of(raw0, false, null, actionPRESS),
                 // rotary
                 Arguments.of(raw, true, 10, actionUP),
                 Arguments.of(raw, true, 30, actionDOWN),

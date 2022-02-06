@@ -36,6 +36,8 @@ public class AdapterMidiEvent {
             return Optional.of(new com.ownimage.midi2key.model.MidiAction(getControl(), UP));
         }
         // is button press
-        return Optional.of(new com.ownimage.midi2key.model.MidiAction(getControl(), PRESS));
+        if (value == 0) return Optional.of(new com.ownimage.midi2key.model.MidiAction(getControl(), PRESS));
+        return Optional.empty();
+
     }
 }

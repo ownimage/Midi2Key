@@ -7,11 +7,19 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.ownimage.midi2key.core.KeyboardActionReceiver;
 import com.ownimage.midi2key.model.KeyboardAction;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*;
 
 public class KeyboardAdapter implements NativeKeyListener {
 
+    private static NativeKeyEvent CONTROL_KEY_DOWN = new NativeKeyEvent(2401, 0, 0, VC_CONTROL, '\uFFFF', 2);
+    private static NativeKeyEvent ALT_KEY_DOWN = new NativeKeyEvent(2401, 0, 0, VC_ALT, '\uFFFF', 2);
+    private static NativeKeyEvent SHIFT_KEY_DOWN = new NativeKeyEvent(2401, 0, 0, VC_SHIFT, '\uFFFF', 2);
+    private static NativeKeyEvent CONTROL_KEY_UP = new NativeKeyEvent(2402, 0, 0, VC_CONTROL, '\uFFFF', 2);
+    private static NativeKeyEvent ALT_KEY_UP = new NativeKeyEvent(2402, 0, 0, VC_ALT, '\uFFFF', 2);
+    private static NativeKeyEvent SHIFT_KEY_UP = new NativeKeyEvent(2402, 0, 0, VC_SHIFT, '\uFFFF', 2);
     KeyboardActionReceiver keyboardActionReceiver;
 
 
@@ -33,39 +41,16 @@ public class KeyboardAdapter implements NativeKeyListener {
     }
 
     public void nativeKeyPressed(NativeKeyEvent e) {
-        var keyChar = e.getKeyCode();
-        if (keyChar == VC_SHIFT || keyChar == VC_ALT || keyChar == VC_CONTROL) return;
+        var keyCode = e.getKeyCode();
+        if (keyCode == VC_SHIFT || keyCode == VC_ALT || keyCode == VC_CONTROL) return;
 
         var shift = (e.getModifiers() & NativeInputEvent.SHIFT_MASK) != 0;
         var ctrl = (e.getModifiers() & NativeInputEvent.CTRL_MASK) != 0;
         var alt = (e.getModifiers() & NativeInputEvent.ALT_MASK) != 0;
-        var keyboardStroke = new KeyboardAction(ctrl, alt, shift, keyChar);
+        var keyboardStroke = new KeyboardAction(ctrl, alt, shift, keyCode, NativeKeyEvent.getKeyText(keyCode));
+//        System.out.println("Key " + NativeKeyEvent.getKeyText(e.getKeyCode()));
 //        System.out.println("Key Pressed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int) e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
         keyboardActionReceiver.receive(keyboardStroke);
-
-        if (e.getRawCode() == 65) { // press A
-            var thread = new Thread(() -> {
-                synchronized (this) {
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
-
-                    var keySHIFTdown = new NativeKeyEvent(2401, 0, 0, 42, '\uFFFF', 2);
-                    var keyBdown = new NativeKeyEvent(2401, 0, 0, 48, '\uFFFF', 1);
-                    var keyBup = new NativeKeyEvent(2402, 0, 0, 48, '\uFFFF', 1);
-                    var keySHIFTup = new NativeKeyEvent(2402, 0, 0, 42, '\uFFFF', 2);
-
-//                    GlobalScreen.postNativeEvent(keySHIFTdown);
-//                    GlobalScreen.postNativeEvent(keyBdown);
-//                    GlobalScreen.postNativeEvent(keyBup);
-//                    GlobalScreen.postNativeEvent(keySHIFTup);
-//                    System.out.println("PRINTED");
-                }
-            });
-            thread.start();
-        }
     }
 
     public void nativeKeyReleased(NativeKeyEvent e) {
@@ -74,5 +59,24 @@ public class KeyboardAdapter implements NativeKeyListener {
 
     public void nativeKeyTyped(NativeKeyEvent e) {
 //        System.out.println("Key Typed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int)e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
+    }
+
+    public void sendKeyboardAction(@NotNull KeyboardAction keyboardAction) {
+        var keyDown = new NativeKeyEvent(2401, 0, 0, keyboardAction.getKeyCode(), '\uFFFF', 2);
+        var keyUp = new NativeKeyEvent(2402, 0, 0, keyboardAction.getKeyCode(), '\uFFFF', 2);
+
+        if (keyboardAction.isCtrl()) GlobalScreen.postNativeEvent(CONTROL_KEY_DOWN);
+        if (keyboardAction.isShift())GlobalScreen.postNativeEvent(SHIFT_KEY_DOWN);
+        if (keyboardAction.isAlt())GlobalScreen.postNativeEvent(ALT_KEY_DOWN);
+        GlobalScreen.postNativeEvent(keyDown);
+        GlobalScreen.postNativeEvent(keyUp);
+        if (keyboardAction.isAlt())GlobalScreen.postNativeEvent(ALT_KEY_UP);
+        if (keyboardAction.isShift())GlobalScreen.postNativeEvent(SHIFT_KEY_UP);
+        if (keyboardAction.isCtrl())GlobalScreen.postNativeEvent(CONTROL_KEY_UP);
+    }
+
+    @SneakyThrows
+    public void stop() {
+        GlobalScreen.unregisterNativeHook();
     }
 }

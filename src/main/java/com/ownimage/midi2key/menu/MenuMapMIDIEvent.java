@@ -19,13 +19,18 @@ public class MenuMapMIDIEvent extends AbstractMenu {
     }
 
     public void run() {
-        printPrompt();
-        var midiAction = menuInputProvider.getMidiAction();
-        System.out.println("Press Key combo");
-        var keyboardAction = menuInputProvider.getKeyboardAction();
-        var config = configChanger.config().addMapping(midiAction, keyboardAction);
-        configChanger.config(config);
-        System.out.println("MIDI Action mapped");
-        printSeparator();
+        try {
+            configChanger.stopMapping();
+            printPrompt(false);
+            var midiAction = menuInputProvider.getMidiAction();
+            System.out.println("Press Key combo");
+            var keyboardAction = menuInputProvider.getKeyboardAction();
+            var config = configChanger.config().addMapping(midiAction, keyboardAction);
+            configChanger.config(config);
+            System.out.println("MIDI Action mapped");
+            printSeparator();
+        } finally {
+            configChanger.startMapping();
+        }
     }
 }
