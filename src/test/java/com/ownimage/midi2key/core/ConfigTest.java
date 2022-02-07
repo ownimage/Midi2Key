@@ -36,7 +36,7 @@ class ConfigTest {
     @Test
     public void defaultConstructorToJSON() {
         // given
-        var expected = "{\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
+        var expected = "{\"filename\":\"config.json\",\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
         // when
         var actual = gson.toJson(underTest);
         // then
@@ -46,8 +46,8 @@ class ConfigTest {
     @Test
     public void addRotaryControl() {
         // given
-        var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
-        var expectedAfter = "{\"rotaryControl\":[1],\"mapping\":{},\"labels\":{}}";
+        var expectedOriginal = "{\"filename\":\"config.json\",\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
+        var expectedAfter = "{\"filename\":\"config.json\",\"rotaryControl\":[1],\"mapping\":{},\"labels\":{}}";
         // when
         var after = underTest.addRotaryControl(new MidiAction(1, UP));
         var actualOriginal = gson.toJson(underTest);
@@ -60,8 +60,8 @@ class ConfigTest {
     @Test
     public void addTwoRotaryControls() {
         // given
-        var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
-        var expectedAfter = "{\"rotaryControl\":[1,2],\"mapping\":{},\"labels\":{}}";
+        var expectedOriginal = "{\"filename\":\"config.json\",\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
+        var expectedAfter = "{\"filename\":\"config.json\",\"rotaryControl\":[1,2],\"mapping\":{},\"labels\":{}}";
         // when
         var after = underTest
                 .addRotaryControl(new MidiAction(1, UP))
@@ -79,13 +79,14 @@ class ConfigTest {
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);
         var config = underTest
+                .filename(testFile.getAbsolutePath())
                 .addRotaryControl(new MidiAction(1, UP))
                 .addRotaryControl(new MidiAction(2, UP))
                 .addMapping(new MidiAction(10, PRESS), new KeyboardAction(true, true, false, (char) 19, "DESC-A"))
                 .addMapping(new MidiAction(11, UP), new KeyboardAction(true, true, false, (char) 120, "DESC-B"));
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10-PRESS\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19,\"description\":\"DESC-A\"},\"11-UP\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120,\"description\":\"DESC-B\"}},\"labels\":{}}";
+        var expected = "{\"filename\":\"config.json\",\"rotaryControl\":[1,2],\"mapping\":{\"10-PRESS\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19,\"description\":\"DESC-A\"},\"11-UP\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120,\"description\":\"DESC-B\"}},\"labels\":{}}";
         // when
-        config.save(testFile, false);
+        config.save(false);
         // then
         var actual = fileToString(testFile);
         assertEquals(expected, actual);
@@ -96,11 +97,12 @@ class ConfigTest {
         // given
         var fileName = "config.json";
         var testFile = new File(tempDir.toFile(), fileName);
-        ;
-        var expected = "{\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19},\"11\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120}}}";
+
+        var expected = "{\"filename\":\"config.json\",\"rotaryControl\":[1,2],\"mapping\":{\"10\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":19},\"11\":{\"ctrl\":true,\"alt\":true,\"shift\":false,\"keyCode\":120}}}";
         stringToFile(expected, testFile);
+        var config = underTest.withFilename(testFile.getAbsolutePath());
         // when
-        var config = Config.open(testFile);
+        config = config.open();
         // then
         var actual = gson.toJson(config);
         assertEquals(expected, actual);
@@ -109,8 +111,8 @@ class ConfigTest {
     @Test
     public void testAddMapping() {
         // given
-        var expectedOriginal = "{\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
-        var expectedAfter = "{\"rotaryControl\":[],\"mapping\":{\"1-DOWN\":{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":12,\"description\":\"DESC\"}},\"labels\":{}}";
+        var expectedOriginal = "{\"filename\":\"config.json\",\"rotaryControl\":[],\"mapping\":{},\"labels\":{}}";
+        var expectedAfter = "{\"filename\":\"config.json\",\"rotaryControl\":[],\"mapping\":{\"1-DOWN\":{\"ctrl\":true,\"alt\":false,\"shift\":true,\"keyCode\":12,\"description\":\"DESC\"}},\"labels\":{}}";
         // when
         var after = underTest.addMapping(new MidiAction(1, DOWN), new KeyboardAction(true, false, true, (char) 12, "DESC"));
         var actualOriginal = gson.toJson(underTest);
