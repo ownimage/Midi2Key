@@ -37,11 +37,15 @@ public class Config {
 
     @SneakyThrows
     public Config open() {
-        String json = Files.readString(getConfigFile().toPath());
-        Gson gson = new Gson();
-        var config = gson.fromJson(json, Config.class);
-        config.filename = getConfigFile().getName();
-        return config;
+        var file = getConfigFile();
+        if (file.exists()) {
+            String json = Files.readString(file.toPath());
+            Gson gson = new Gson();
+            var config = gson.fromJson(json, Config.class);
+            config.filename = getConfigFile().getName();
+            return config;
+        }
+        return this;
     }
 
     public Config filename(String filename) {

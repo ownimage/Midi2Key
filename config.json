@@ -1,1 +1,24 @@
-{"filename":"config.json","rotaryControl":[1,2],"mapping":{"10-PRESS":{"ctrl":true,"alt":true,"shift":false,"keyCode":19,"description":"DESC-A"},"11-UP":{"ctrl":true,"alt":true,"shift":false,"keyCode":120,"description":"DESC-B"}},"labels":{}}
+{
+  "filename": "config.json",
+  "rotaryControl": [
+    1,
+    2
+  ],
+  "mapping": {
+    "10-PRESS": {
+      "ctrl": true,
+      "alt": true,
+      "shift": false,
+      "keyCode": 19,
+      "description": "DESC-A"
+    },
+    "11-UP": {
+      "ctrl": true,
+      "alt": true,
+      "shift": false,
+      "keyCode": 120,
+      "description": "DESC-B"
+    }
+  },
+  "labels": {}
+}

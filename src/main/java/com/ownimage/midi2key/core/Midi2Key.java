@@ -21,7 +21,10 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
 
     private boolean mapMidiEvents = true;
 
-    private Midi2Key() {
+    private Midi2Key(String[] args) {
+        var filename = (args == null || args.length == 0) ? "config.json" : args[0];
+        config = config.withFilename(filename);
+//        System.out.println("Filename: " + config.getConfigFile().getAbsolutePath());
     }
 
     public Midi2Key(MidiAdapter midiAdapter) {
@@ -29,9 +32,9 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     }
 
     public static void main(String[] args) {
-        var midi2key = new Midi2Key();
+        var midi2key = new Midi2Key(args);
         midi2key.start();
-        System.out.println("end of menu");
+//        System.out.println("end of menu");
         midi2key.stop();
     }
 
@@ -80,9 +83,9 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
 
     @Override
     public void saveConfig() {
-        System.out.println("Midi2Key::saveConfig not yet implemented");
         System.out.println("config = " + config.toJson(false));
         config.save(true);
+        System.out.println("Config saved");
     }
 
     @Override
