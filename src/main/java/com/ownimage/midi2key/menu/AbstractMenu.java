@@ -28,7 +28,9 @@ public class AbstractMenu {
     }
 
     protected MidiAction getMidiAction() {
-        return menuInputProvider.getMidiAction();
+        var midiAction = menuInputProvider.getMidiAction();
+        System.out.println("Midi Input:" + midiAction.control() + "->" + configChanger.config().getLabel(midiAction));
+        return midiAction;
     }
 
     protected KeyboardAction getKeyboardAction() {

@@ -27,7 +27,6 @@ class AdapterMidiEventTest {
         var raw0 = new AdapterMidiEvent(10, 0);
         var rawMax = new AdapterMidiEvent(10, MidiAction.ROTARY_MAX);
 
-        var actionPRESS = Optional.of(new MidiAction(10, PRESS));
         var actionUP = Optional.of(new MidiAction(10, UP));
         var actionDOWN = Optional.of(new MidiAction(10, DOWN));
 
@@ -35,10 +34,18 @@ class AdapterMidiEventTest {
                 // rotary null values
                 Arguments.of(raw, true, null, Optional.empty()),
                 // button presses
-                Arguments.of(raw0, false, 20, actionPRESS),
-                Arguments.of(raw0, false, 10, actionPRESS),
-                Arguments.of(raw0, false, 30, actionPRESS),
-                Arguments.of(raw0, false, null, actionPRESS),
+                Arguments.of(raw, false, 20, Optional.empty()),
+                Arguments.of(raw, false, 10, Optional.empty()),
+                Arguments.of(raw, false, 30, Optional.empty()),
+                Arguments.of(raw, false, null, Optional.empty()),
+                Arguments.of(raw0, false, 20, actionUP),
+                Arguments.of(raw0, false, 10, actionUP),
+                Arguments.of(raw0, false, 30, actionUP),
+                Arguments.of(raw0, false, null, actionUP),
+                Arguments.of(rawMax, false, 20, actionDOWN),
+                Arguments.of(rawMax, false, 10, actionDOWN),
+                Arguments.of(rawMax, false, 30, actionDOWN),
+                Arguments.of(rawMax, false, null, actionDOWN),
                 // rotary
                 Arguments.of(raw, true, 10, actionUP),
                 Arguments.of(raw, true, 30, actionDOWN),

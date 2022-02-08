@@ -23,7 +23,7 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
 
     private Midi2Key(String[] args) {
         var filename = (args == null || args.length == 0) ? "config.json" : args[0];
-        config = config.withFilename(filename);
+        config = config.withFilename(filename).open();
 //        System.out.println("Filename: " + config.getConfigFile().getAbsolutePath());
     }
 
@@ -39,10 +39,10 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     }
 
     @Override
-    public void receive(@NotNull MidiAction midiAction) {
-//        System.out.println("####### " + midiAction);
+    public void receive(boolean rotary, @NotNull MidiAction midiAction) {
+      System.out.println("Midi2Key::recieve: rotary="+rotary + " control=" + midiAction.control() + "->" + config().getLabel(midiAction) + " midiAction=" + midiAction);
         lastMidiAction.value(midiAction);
-        if (mapMidiEvents) config.map(midiAction).ifPresent(ka -> keyboardAdapter.sendKeyboardAction(ka));
+        if (mapMidiEvents) config.map(midiAction).ifPresent(ka -> keyboardAdapter.sendKeyboardAction(rotary, midiAction.action(), ka));
     }
 
     private synchronized void start() {

@@ -56,7 +56,7 @@ public class MidiAdapter implements Receiver {
     }
 
     public void send(MidiMessage msg, long timeStamp) {
-
+//        System.out.println("send");
         byte[] aMsg = msg.getMessage();
         // aMsg[0] is something, velocity maybe? Not 100% sure.
         // aMsg[1] is the note value as an int. This is the important one.
@@ -68,9 +68,11 @@ public class MidiAdapter implements Receiver {
         var control = Integer.parseInt(String.valueOf(aMsg[1]));
         var value = Integer.parseInt(String.valueOf(aMsg[2]));
         var midiEvent = new AdapterMidiEvent(control, value);
+        System.out.println(String.format("MidiAdapter::send gets %s, %s", aMsg[0], midiEvent));
         var previousValue = previousValues.put(control, value);
         var actionableMidiEvent = midiEvent.toMidiAction(previousValue, configSuppier.config());
-        actionableMidiEvent.ifPresent(e -> midiEventReceiver.receive(e));
+        var rotary = configSuppier.config().isRotary(midiEvent);
+        actionableMidiEvent.ifPresent(e -> midiEventReceiver.receive(rotary, e));
     }
 
     public void close() {

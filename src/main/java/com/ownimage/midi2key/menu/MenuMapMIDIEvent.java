@@ -23,7 +23,7 @@ public class MenuMapMIDIEvent extends AbstractMenu {
         try {
             configChanger.stopMapping();
             printPrompt(false);
-            var midiAction = menuInputProvider.getMidiAction();
+            var midiAction = getMidiAction();
             System.out.println("Press Key combo");
             var keyboardAction = menuInputProvider.getKeyboardAction();
             var config = configChanger.config().addMapping(midiAction, keyboardAction);

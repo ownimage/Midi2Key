@@ -4,5 +4,5 @@ import com.ownimage.midi2key.model.MidiAction;
 
 public interface MidiActionReceiver {
 
-     void receive(MidiAction midiEvent);
+     void receive(boolean rotary, MidiAction midiEvent);
 }

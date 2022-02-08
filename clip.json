@@ -1,6 +1,6 @@
 {
   "filename": "clip.json",
-  "rotaryControl": [
+  "rotaryControls": [
     1,
     2,
     3,
@@ -13,36 +13,13 @@
     10,
     11,
     12,
-    13,
     14,
     15,
     16,
     17,
     18
   ],
-  "mapping": {
-    "15-DOWN": {
-      "ctrl": false,
-      "alt": false,
-      "shift": false,
-      "keyCode": 57,
-      "description": "Space"
-    },
-    "15-UP": {
-      "ctrl": false,
-      "alt": false,
-      "shift": false,
-      "keyCode": 57,
-      "description": "Space"
-    },
-    "23-PRESS": {
-      "ctrl": false,
-      "alt": false,
-      "shift": false,
-      "keyCode": 19,
-      "description": "R"
-    }
-  },
+  "mapping": {},
   "labels": {
     "1": "A1R",
     "2": "A2R",
@@ -51,17 +28,17 @@
     "5": "A5R",
     "6": "A6R",
     "7": "A7R",
-    "8": "pA8R",
-    "9": "A2B1",
+    "8": "A8R",
+    "9": "ASlider",
     "10": "A3B1",
-    "11": "A4B1",
+    "11": "B1R",
     "12": "B2R",
-    "13": "A6B1",
-    "14": "A7B1",
-    "15": "A8B1",
+    "13": "B3R",
+    "14": "B4R",
+    "15": "B5R",
     "16": "A1B2",
     "17": "A2B2",
-    "18": "A3B2",
+    "18": "A3B3",
     "19": "A4B2",
     "20": "A5B2",
     "21": "A6B2",

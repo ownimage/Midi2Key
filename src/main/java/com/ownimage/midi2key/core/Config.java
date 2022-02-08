@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
+import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -23,7 +24,7 @@ import java.util.TreeSet;
 public class Config {
 
     private String filename;
-    private TreeSet<Integer> rotaryControl;
+    private TreeSet<Integer> rotaryControls;
     private TreeMap<String, KeyboardAction> mapping;
     private TreeMap<Integer, String> labels;
 
@@ -73,38 +74,49 @@ public class Config {
     }
 
     public Config addRotaryControl(@NotNull MidiAction control) {
-        TreeSet<Integer> rc = new TreeSet<>(rotaryControl);
-        rc.add(control.getControl());
-        return withRotaryControl(rc);
+        TreeSet<Integer> rc = new TreeSet<>(rotaryControls);
+        rc.add(control.control());
+        return withRotaryControls(rc);
     }
 
     public Config addMapping(@NotNull MidiAction midiEvent, @NotNull KeyboardAction keyboardAction) {
         var m = new TreeMap<>(mapping);
-        m.put(midiEvent.getKey(), keyboardAction);
+        m.put(getMappingKey(midiEvent), keyboardAction);
         return withMapping(m);
     }
 
+    public String getMappingKey(@NotNull MidiAction midiEvent) {
+        return rotaryControls.contains(midiEvent.control())
+                ? midiEvent.control() + "-" + midiEvent.action()
+                : String.valueOf(midiEvent.control());
+    }
+
     public Optional<KeyboardAction> map(@NotNull MidiAction midiEvent) {
-        return Optional.ofNullable(mapping.get(midiEvent.getKey()));
+        return Optional.ofNullable(mapping.get(getMappingKey(midiEvent)));
     }
 
     // TODO dont like the AdapterMidiEvent leaking here
     public boolean isRotary(AdapterMidiEvent raw) {
-        return rotaryControl.contains(raw.getControl());
+        return rotaryControls.contains(raw.getControl());
     }
 
     public Config addLabel(MidiAction midiAction, String label) {
         var l = new TreeMap<>(labels);
-        l.put(midiAction.getControl(), label);
+        l.put(midiAction.control(), label);
         return withLabels(l);
     }
 
+    public String getLabel(MidiAction midiAction) {
+        return labels.get(midiAction.control());
+    }
     public void printConfig() {
-        System.out.println("############ printing config");
-        mapping.entrySet().forEach( e -> {
-            var name = actionNameToString(e.getKey());
-            System.out.println("name: " + name + "\taction: " + e.getValue());
-        });
+//        System.out.println("############ printing config");
+        mapping.entrySet().forEach(e -> System.out.println(mappingToString(e)));
+    }
+
+    public String mappingToString(@NotNull Map.Entry<String, KeyboardAction> e) {
+        var name = actionNameToString(e.getKey());
+        return name + "\t-> " + e.getValue().toPrettyString();
     }
 
     public String actionNameToString(@NotNull String name) {

@@ -26,16 +26,21 @@ public class MidiAdapterTest implements MidiActionReceiver, ConfigSuppier {
 
     private static Stream<Arguments> testSend_parameters() {
         var control = 10;
-        var press = new MidiAction(control, PRESS);
         var up = new MidiAction(control, UP);
         var down = new MidiAction(control, DOWN);
 
         return Stream.of(
                 // non rotary always fires regardless of previous value
-                Arguments.of(false, control, null, 0, press),
-                Arguments.of(false, control, 5, 0, press),
-                Arguments.of(false, control, 10, 0, press),
-                Arguments.of(false, control, 20, 0, press),
+                Arguments.of(false, control, null, 0, up),
+                Arguments.of(false, control, 5, 0, up),
+                Arguments.of(false, control, 10, 0, up),
+                Arguments.of(false, control, 20, 0, up),
+                Arguments.of(false, control, ROTARY_MAX, 0, up),
+                Arguments.of(false, control, null, ROTARY_MAX, down),
+                Arguments.of(false, control, 5, ROTARY_MAX, down),
+                Arguments.of(false, control, 10, ROTARY_MAX, down),
+                Arguments.of(false, control, 20, ROTARY_MAX, down),
+                Arguments.of(false, control, ROTARY_MAX, ROTARY_MAX, down),
                 // rotary null
                 Arguments.of(true, control, null, 20, null),
                 Arguments.of(true, control, null, 0, null),
@@ -81,7 +86,7 @@ public class MidiAdapterTest implements MidiActionReceiver, ConfigSuppier {
     }
 
     @Override
-    public void receive(MidiAction midiEvent) {
+    public void receive(boolean rotary, MidiAction midiEvent) {
         latestMidiEvent = midiEvent;
     }
 }

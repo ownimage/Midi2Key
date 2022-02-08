@@ -36,7 +36,9 @@ public class AdapterMidiEvent {
             return Optional.of(new com.ownimage.midi2key.model.MidiAction(getControl(), UP));
         }
         // is button press
-        if (value == 0) return Optional.of(new com.ownimage.midi2key.model.MidiAction(getControl(), PRESS));
+        System.out.println("########### " + value);
+        if (value == 0) return Optional.of(new com.ownimage.midi2key.model.MidiAction(getControl(), UP));
+        if (value == ROTARY_MAX) return Optional.of(new MidiAction(getControl(), DOWN));
         return Optional.empty();
 
     }

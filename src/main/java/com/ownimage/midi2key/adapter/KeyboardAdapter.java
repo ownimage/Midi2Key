@@ -7,10 +7,13 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.ownimage.midi2key.core.KeyboardActionReceiver;
 import com.ownimage.midi2key.model.KeyboardAction;
+import com.ownimage.midi2key.model.MidiAction;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*;
+import static com.ownimage.midi2key.model.MidiAction.Action.DOWN;
+import static com.ownimage.midi2key.model.MidiAction.Action.UP;
 
 public class KeyboardAdapter implements NativeKeyListener {
 
@@ -61,18 +64,22 @@ public class KeyboardAdapter implements NativeKeyListener {
 //        System.out.println("Key Typed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int)e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
     }
 
-    public void sendKeyboardAction(@NotNull KeyboardAction keyboardAction) {
+    public void sendKeyboardAction(boolean rotary, MidiAction.Action action, @NotNull KeyboardAction keyboardAction) {
         var keyDown = new NativeKeyEvent(2401, 0, 0, keyboardAction.getKeyCode(), '\uFFFF', 2);
         var keyUp = new NativeKeyEvent(2402, 0, 0, keyboardAction.getKeyCode(), '\uFFFF', 2);
 
-        if (keyboardAction.isCtrl()) GlobalScreen.postNativeEvent(CONTROL_KEY_DOWN);
-        if (keyboardAction.isShift())GlobalScreen.postNativeEvent(SHIFT_KEY_DOWN);
-        if (keyboardAction.isAlt())GlobalScreen.postNativeEvent(ALT_KEY_DOWN);
-        GlobalScreen.postNativeEvent(keyDown);
-        GlobalScreen.postNativeEvent(keyUp);
-        if (keyboardAction.isAlt())GlobalScreen.postNativeEvent(ALT_KEY_UP);
-        if (keyboardAction.isShift())GlobalScreen.postNativeEvent(SHIFT_KEY_UP);
-        if (keyboardAction.isCtrl())GlobalScreen.postNativeEvent(CONTROL_KEY_UP);
+        if (rotary || action == DOWN) {
+            if (keyboardAction.isCtrl()) GlobalScreen.postNativeEvent(CONTROL_KEY_DOWN);
+            if (keyboardAction.isShift()) GlobalScreen.postNativeEvent(SHIFT_KEY_DOWN);
+            if (keyboardAction.isAlt()) GlobalScreen.postNativeEvent(ALT_KEY_DOWN);
+            GlobalScreen.postNativeEvent(keyDown);
+        }
+        if (rotary || action == UP) {
+            GlobalScreen.postNativeEvent(keyUp);
+            if (keyboardAction.isAlt()) GlobalScreen.postNativeEvent(ALT_KEY_UP);
+            if (keyboardAction.isShift()) GlobalScreen.postNativeEvent(SHIFT_KEY_UP);
+            if (keyboardAction.isCtrl()) GlobalScreen.postNativeEvent(CONTROL_KEY_UP);
+        }
     }
 
     @SneakyThrows
