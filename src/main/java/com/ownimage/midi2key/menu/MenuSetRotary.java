@@ -25,6 +25,5 @@ public class MenuSetRotary extends AbstractMenu {
         var config = configChanger.config().addRotaryControl(midiAction);
         configChanger.config(config);
         System.out.println("MIDI control marked as Rotary");
-        printSeparator();
     }
 }

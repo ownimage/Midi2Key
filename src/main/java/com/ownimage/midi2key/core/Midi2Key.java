@@ -83,9 +83,9 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
 
     @Override
     public void saveConfig() {
-        System.out.println("config = " + config.toJson(false));
+//        System.out.println("config = " + config.toJson(false));
         config.save(true);
-        System.out.println("Config saved");
+//        System.out.println("Config saved");
     }
 
     @Override
@@ -103,5 +103,10 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     public void openConfig() {
         var c = config.open();
         config(c);
+    }
+
+    @Override
+    public void printConfig() {
+        config.printConfig();
     }
 }

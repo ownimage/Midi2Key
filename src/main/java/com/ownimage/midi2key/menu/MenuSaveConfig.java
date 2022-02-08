@@ -17,6 +17,5 @@ public class MenuSaveConfig extends AbstractMenu {
         printSeparator();
         configChanger.saveConfig();
         System.out.println("Config Saved");
-        printSeparator();
     }
 }

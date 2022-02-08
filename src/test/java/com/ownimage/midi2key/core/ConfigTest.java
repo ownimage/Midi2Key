@@ -3,13 +3,14 @@ package com.ownimage.midi2key.core;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ownimage.midi2key.adapter.AdapterMidiEvent;
-import com.ownimage.midi2key.model.MidiAction;
 import com.ownimage.midi2key.model.KeyboardAction;
+import com.ownimage.midi2key.model.MidiAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
@@ -167,6 +168,21 @@ class ConfigTest {
                 Arguments.of("different control", add, differentControl, false),
                 Arguments.of("different value", add, differentValue, true)
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "12-PRESS,12,label,label-PRESS",
+            "AAA-PRESS, 12, BBB, AAA-PRESS",
+            "NotProperlyFormatted,10,A1B1,NotProperlyFormatted"
+    })
+    public void testActionNameToString(String mappingKey, int control, String label, String expected) {
+        // given
+        underTest = underTest.addLabel(new MidiAction(control, PRESS), label);
+        // when
+        var actual = underTest.actionNameToString(mappingKey);
+        // then
+        assertEquals(expected, actual);
     }
 
     private String fileToString(File file) throws IOException {

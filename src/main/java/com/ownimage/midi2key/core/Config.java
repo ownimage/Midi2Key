@@ -98,4 +98,22 @@ public class Config {
         l.put(midiAction.getControl(), label);
         return withLabels(l);
     }
+
+    public void printConfig() {
+        System.out.println("############ printing config");
+        mapping.entrySet().forEach( e -> {
+            var name = actionNameToString(e.getKey());
+            System.out.println("name: " + name + "\taction: " + e.getValue());
+        });
+    }
+
+    public String actionNameToString(@NotNull String name) {
+        try {
+            var pieces = name.split("-");
+            var label = labels.getOrDefault(Integer.parseInt(pieces[0]), pieces[0]);
+            return label + "-" + pieces[1];
+        } catch (Throwable t) {
+            return name;
+        }
+    }
 }

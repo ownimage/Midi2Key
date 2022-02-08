@@ -29,7 +29,6 @@ public class MenuMapMIDIEvent extends AbstractMenu {
             var config = configChanger.config().addMapping(midiAction, keyboardAction);
             configChanger.config(config);
             System.out.println("MIDI Action mapped");
-            printSeparator();
         } finally {
             configChanger.startMapping();
         }

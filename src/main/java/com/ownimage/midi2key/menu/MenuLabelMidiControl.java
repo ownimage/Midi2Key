@@ -29,6 +29,5 @@ public class MenuLabelMidiControl extends AbstractMenu {
         var config = configChanger.config().addLabel(midiAction, label);
         configChanger.config(config);
         System.out.println("MIDI Label added");
-        printSeparator();
     }
 }

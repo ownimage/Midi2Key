@@ -20,7 +20,29 @@
     17,
     18
   ],
-  "mapping": {},
+  "mapping": {
+    "15-DOWN": {
+      "ctrl": false,
+      "alt": false,
+      "shift": false,
+      "keyCode": 57,
+      "description": "Space"
+    },
+    "15-UP": {
+      "ctrl": false,
+      "alt": false,
+      "shift": false,
+      "keyCode": 57,
+      "description": "Space"
+    },
+    "23-PRESS": {
+      "ctrl": false,
+      "alt": false,
+      "shift": false,
+      "keyCode": 19,
+      "description": "R"
+    }
+  },
   "labels": {
     "1": "A1R",
     "2": "A2R",
@@ -29,7 +51,7 @@
     "5": "A5R",
     "6": "A6R",
     "7": "A7R",
-    "8": "A1B1",
+    "8": "pA8R",
     "9": "A2B1",
     "10": "A3B1",
     "11": "A4B1",

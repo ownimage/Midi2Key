@@ -11,4 +11,6 @@ public interface ConfigChanger extends ConfigSuppier {
     void startMapping();
 
     void openConfig();
+
+    void printConfig();
 }
