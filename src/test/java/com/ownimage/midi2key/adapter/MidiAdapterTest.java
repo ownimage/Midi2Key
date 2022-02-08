@@ -59,7 +59,7 @@ public class MidiAdapterTest implements MidiActionReceiver, ConfigSuppier {
 
     @BeforeEach
     public void setup() {
-        underTest = new MidiAdapter(this, this, false);
+        underTest = new MidiAdapter( this, false);
         config = Config.builder().build();
         latestMidiEvent = null;
     }

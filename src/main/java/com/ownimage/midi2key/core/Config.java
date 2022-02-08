@@ -3,9 +3,11 @@ package com.ownimage.midi2key.core;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ownimage.midi2key.adapter.AdapterMidiEvent;
+import com.ownimage.midi2key.menu.AbstractMenu;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
 import lombok.*;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -22,6 +24,8 @@ import java.util.TreeSet;
 @With
 @Builder(toBuilder = true)
 public class Config {
+
+    private static Logger logger = Logger.getLogger(Config.class);
 
     private String filename;
     private TreeSet<Integer> rotaryControls;
@@ -110,8 +114,8 @@ public class Config {
         return labels.get(midiAction.control());
     }
     public void printConfig() {
-//        System.out.println("############ printing config");
-        mapping.entrySet().forEach(e -> System.out.println(mappingToString(e)));
+        logger.debug("############ printing config");
+        mapping.entrySet().forEach(e -> logger.info(mappingToString(e)));
     }
 
     public String mappingToString(@NotNull Map.Entry<String, KeyboardAction> e) {

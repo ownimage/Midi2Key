@@ -1,9 +1,12 @@
 package com.ownimage.midi2key.menu;
 
 import com.ownimage.midi2key.core.ConfigChanger;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class MenuSaveConfig extends AbstractMenu {
+
+    private static Logger logger = Logger.getLogger(MenuSaveConfig.class);
 
     public MenuSaveConfig(
             @NotNull MenuInputProvider menuInputProvider,
@@ -16,6 +19,6 @@ public class MenuSaveConfig extends AbstractMenu {
     public void run() {
         printSeparator();
         configChanger.saveConfig();
-        System.out.println("Config Saved");
+        logger.info("Config Saved");
     }
 }

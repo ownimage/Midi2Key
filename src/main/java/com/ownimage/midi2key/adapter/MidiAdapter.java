@@ -1,7 +1,7 @@
 package com.ownimage.midi2key.adapter;
 
-import com.ownimage.midi2key.core.ConfigSuppier;
 import com.ownimage.midi2key.core.MidiActionReceiver;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sound.midi.*;
@@ -11,17 +11,16 @@ import java.util.List;
 
 public class MidiAdapter implements Receiver {
 
+    private static final int ROTARY_CONTROL_START = 1000;
+    private static Logger logger = Logger.getLogger(MidiAdapter.class);
     private MidiActionReceiver midiEventReceiver;
-    private ConfigSuppier configSuppier;
     private HashMap<Integer, Integer> previousValues;
     private List<MidiDevice> devices = new ArrayList<>();
 
     public MidiAdapter(
             @NotNull MidiActionReceiver midiEventReceiver,
-            @NotNull ConfigSuppier configSuppier,
             boolean start) {
         this.midiEventReceiver = midiEventReceiver;
-        this.configSuppier = configSuppier;
         this.previousValues = new HashMap<>();
         if (start) start();
     }
@@ -32,7 +31,7 @@ public class MidiAdapter implements Receiver {
         for (int i = 0; i < infos.length; i++) {
             try {
                 device = MidiSystem.getMidiDevice(infos[i]);
-                System.out.println(infos[i]);
+                logger.debug(infos[i]);
 
                 List<Transmitter> transmitters = device.getTransmitters();
                 for (int j = 0; j < transmitters.size(); j++) {
@@ -45,7 +44,7 @@ public class MidiAdapter implements Receiver {
 
                 device.open();
                 devices.add(device);
-                System.out.println(device.getDeviceInfo() + " Was Opened");
+                logger.debug(device.getDeviceInfo() + " Was Opened");
             } catch (MidiUnavailableException e) {
             }
         }
@@ -56,7 +55,7 @@ public class MidiAdapter implements Receiver {
     }
 
     public void send(MidiMessage msg, long timeStamp) {
-//        System.out.println("send");
+        logger.debug("send");
         byte[] aMsg = msg.getMessage();
         // aMsg[0] is something, velocity maybe? Not 100% sure.
         // aMsg[1] is the note value as an int. This is the important one.
@@ -65,13 +64,13 @@ public class MidiAdapter implements Receiver {
         // send continuous values between then for how quickly it's pressed?
         // I'm only using VMPK for testing on the go, so it's either
         // clicked or not.
-        var control = Integer.parseInt(String.valueOf(aMsg[1]));
+        var rotary = aMsg[0] == -70;
+        var control = Integer.parseInt(String.valueOf(aMsg[1])) + (rotary ? ROTARY_CONTROL_START : 0);
         var value = Integer.parseInt(String.valueOf(aMsg[2]));
         var midiEvent = new AdapterMidiEvent(control, value);
-        System.out.println(String.format("MidiAdapter::send gets %s, %s", aMsg[0], midiEvent));
+        logger.debug(String.format("MidiAdapter::send gets %s, %s", aMsg[0], midiEvent));
         var previousValue = previousValues.put(control, value);
-        var actionableMidiEvent = midiEvent.toMidiAction(previousValue, configSuppier.config());
-        var rotary = configSuppier.config().isRotary(midiEvent);
+        var actionableMidiEvent = midiEvent.toMidiAction(previousValue, rotary);
         actionableMidiEvent.ifPresent(e -> midiEventReceiver.receive(rotary, e));
     }
 

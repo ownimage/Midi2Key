@@ -3,6 +3,7 @@ package com.ownimage.midi2key.menu;
 import com.ownimage.midi2key.core.ConfigChanger;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.VC_X;
 
 public class AbstractMenu {
 
+    private static Logger logger = Logger.getLogger(AbstractMenu.class);
     private static String SEPARATOR = "##################################################################";
 
     protected MenuInputProvider menuInputProvider;
@@ -29,7 +31,7 @@ public class AbstractMenu {
 
     protected MidiAction getMidiAction() {
         var midiAction = menuInputProvider.getMidiAction();
-        System.out.println("Midi Input:" + midiAction.control() + "->" + configChanger.config().getLabel(midiAction));
+        logger.info("Midi Input:" + midiAction.control() + "->" + configChanger.config().getLabel(midiAction));
         return midiAction;
     }
 
@@ -43,12 +45,12 @@ public class AbstractMenu {
 
     protected void printPrompt(boolean addExitThisMenuOption) {
         printSeparator();
-        System.out.print(getPrompt());
-        if (addExitThisMenuOption) System.out.println("X - Exit this menu");
+        logger.info(getPrompt());
+        if (addExitThisMenuOption) logger.info("X - Exit this menu");
     }
 
     protected void printSeparator() {
-        System.out.println(SEPARATOR);
+        logger.error(SEPARATOR);
     }
 
     public void run() {

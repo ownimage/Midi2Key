@@ -1,10 +1,13 @@
 package com.ownimage.midi2key.menu;
 
 import com.ownimage.midi2key.core.ConfigChanger;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public class MenuMapMIDIEvent extends AbstractMenu {
 
+    private static Logger logger = Logger.getLogger(MenuMapMIDIEvent.class);
+    
     public MenuMapMIDIEvent(
             @NotNull MenuInputProvider menuInputProvider,
             @NotNull ConfigChanger configChanger
@@ -24,11 +27,11 @@ public class MenuMapMIDIEvent extends AbstractMenu {
             configChanger.stopMapping();
             printPrompt(false);
             var midiAction = getMidiAction();
-            System.out.println("Press Key combo");
+            logger.info("Press Key combo");
             var keyboardAction = menuInputProvider.getKeyboardAction();
             var config = configChanger.config().addMapping(midiAction, keyboardAction);
             configChanger.config(config);
-            System.out.println("MIDI Action mapped");
+            logger.info("MIDI Action mapped");
         } finally {
             configChanger.startMapping();
         }

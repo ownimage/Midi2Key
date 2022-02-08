@@ -5,10 +5,12 @@ import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.NativeInputEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import com.ownimage.midi2key.core.Config;
 import com.ownimage.midi2key.core.KeyboardActionReceiver;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
 import lombok.SneakyThrows;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.*;
@@ -17,6 +19,8 @@ import static com.ownimage.midi2key.model.MidiAction.Action.UP;
 
 public class KeyboardAdapter implements NativeKeyListener {
 
+    private static Logger logger = Logger.getLogger(KeyboardAdapter.class);
+    
     private static NativeKeyEvent CONTROL_KEY_DOWN = new NativeKeyEvent(2401, 0, 0, VC_CONTROL, '\uFFFF', 2);
     private static NativeKeyEvent ALT_KEY_DOWN = new NativeKeyEvent(2401, 0, 0, VC_ALT, '\uFFFF', 2);
     private static NativeKeyEvent SHIFT_KEY_DOWN = new NativeKeyEvent(2401, 0, 0, VC_SHIFT, '\uFFFF', 2);
@@ -51,17 +55,17 @@ public class KeyboardAdapter implements NativeKeyListener {
         var ctrl = (e.getModifiers() & NativeInputEvent.CTRL_MASK) != 0;
         var alt = (e.getModifiers() & NativeInputEvent.ALT_MASK) != 0;
         var keyboardStroke = new KeyboardAction(ctrl, alt, shift, keyCode, NativeKeyEvent.getKeyText(keyCode));
-//        System.out.println("Key " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-//        System.out.println("Key Pressed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int) e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
+        logger.debug("Key " + NativeKeyEvent.getKeyText(e.getKeyCode()));
+        logger.debug("Key Pressed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int) e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
         keyboardActionReceiver.receive(keyboardStroke);
     }
 
     public void nativeKeyReleased(NativeKeyEvent e) {
-//        System.out.println("Key Released: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int)e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
+        logger.debug("Key Released: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int)e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
     }
 
     public void nativeKeyTyped(NativeKeyEvent e) {
-//        System.out.println("Key Typed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int)e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
+        logger.debug("Key Typed: id=" + e.getID() + "\tmodifiers=" + e.getModifiers() + "\trawCode=" + e.getRawCode() + "\tkeyCode=" + e.getKeyCode() + "\tkeyChar=" + (int)e.getKeyChar() + "\tKeyLocation=" + e.getKeyLocation());
     }
 
     public void sendKeyboardAction(boolean rotary, MidiAction.Action action, @NotNull KeyboardAction keyboardAction) {
