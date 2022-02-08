@@ -21,6 +21,20 @@
     1018
   ],
   "mapping": {
+    "1008-DOWN": {
+      "ctrl": true,
+      "alt": false,
+      "shift": false,
+      "keyCode": 12,
+      "description": "Minus"
+    },
+    "1008-UP": {
+      "ctrl": true,
+      "alt": false,
+      "shift": false,
+      "keyCode": 13,
+      "description": "Equals"
+    },
     "15": {
       "ctrl": false,
       "alt": false,

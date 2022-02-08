@@ -1,6 +1,7 @@
 package com.ownimage.midi2key.menu;
 
 import com.ownimage.midi2key.core.ConfigChanger;
+import lombok.SneakyThrows;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,12 +23,14 @@ public class MenuMapMIDIEvent extends AbstractMenu {
     }
 
     @Override
-    public void run() {
+    @SneakyThrows
+    public synchronized void run() {
         try {
-            configChanger.stopMapping();
             printPrompt(false);
             var midiAction = getMidiAction();
             logger.info("Press Key combo");
+            configChanger.stopMapping();
+            wait(1000);
             var keyboardAction = menuInputProvider.getKeyboardAction();
             var config = configChanger.config().addMapping(midiAction, keyboardAction);
             configChanger.config(config);

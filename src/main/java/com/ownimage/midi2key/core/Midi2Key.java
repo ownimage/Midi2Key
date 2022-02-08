@@ -44,8 +44,8 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     @Override
     public void receive(boolean rotary, @NotNull MidiAction midiAction) {
         logger.debug("Midi2Key::recieve: rotary=" + rotary + " control=" + midiAction.control() + "->" + config().getLabel(midiAction) + " midiAction=" + midiAction);
-        lastMidiAction.value(midiAction);
         if (mapMidiEvents)
+            lastMidiAction.value(midiAction);
             logger.debug(String.format("Midi2Key::receive %s", midiAction));
             config.map(midiAction).ifPresent(ka -> {
                 logger.debug(String.format("Midi2Key::receive %s %s %s", rotary, midiAction, ka));
@@ -97,12 +97,12 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
     }
 
     @Override
-    public void stopMapping() {
+    public synchronized void stopMapping() {
         mapMidiEvents = false;
     }
 
     @Override
-    public void startMapping() {
+    public synchronized void startMapping() {
         mapMidiEvents = true;
     }
 
