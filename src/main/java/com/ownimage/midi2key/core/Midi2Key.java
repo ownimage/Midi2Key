@@ -4,12 +4,10 @@ import com.ownimage.midi2key.adapter.KeyboardAdapter;
 import com.ownimage.midi2key.adapter.MidiAdapter;
 import com.ownimage.midi2key.menu.MenuInputProvider;
 import com.ownimage.midi2key.menu.MenuMain;
-import com.ownimage.midi2key.menu.MenuSaveConfig;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
 import com.ownimage.midi2key.util.WaitForNextValue;
 import lombok.SneakyThrows;
-import org.apache.commons.io.output.NullPrintStream;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +46,11 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
         logger.debug("Midi2Key::recieve: rotary=" + rotary + " control=" + midiAction.control() + "->" + config().getLabel(midiAction) + " midiAction=" + midiAction);
         lastMidiAction.value(midiAction);
         if (mapMidiEvents)
-            config.map(midiAction).ifPresent(ka -> keyboardAdapter.sendKeyboardAction(rotary, midiAction.action(), ka));
+            logger.debug(String.format("Midi2Key::receive %s", midiAction));
+            config.map(midiAction).ifPresent(ka -> {
+                logger.debug(String.format("Midi2Key::receive %s %s %s", rotary, midiAction, ka));
+                keyboardAdapter.sendKeyboardAction(rotary, midiAction.action(), ka);
+            });
     }
 
     private synchronized void start() {

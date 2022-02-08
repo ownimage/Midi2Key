@@ -69,6 +69,7 @@ public class KeyboardAdapter implements NativeKeyListener {
     }
 
     public void sendKeyboardAction(boolean rotary, MidiAction.Action action, @NotNull KeyboardAction keyboardAction) {
+        logger.debug(String.format("KeyboardAction::sendKeyboardAction rotary= %s, action=%s, keyboardAction=%s ", rotary, action, keyboardAction));
         var keyDown = new NativeKeyEvent(2401, 0, 0, keyboardAction.getKeyCode(), '\uFFFF', 2);
         var keyUp = new NativeKeyEvent(2402, 0, 0, keyboardAction.getKeyCode(), '\uFFFF', 2);
 
