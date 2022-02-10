@@ -4,14 +4,14 @@
     <!--Console appender-->
     <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
-<!--            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %m%n" />-->
-            <param name="ConversionPattern" value="%m%n" />
+            <!--            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %m%n" />-->
+            <param name="ConversionPattern" value="%m%n"/>
         </layout>
     </appender>
 
     <root>
-        <level value="INFO" />
-        <appender-ref ref="stdout" />
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
     </root>
 
 </log4j:configuration>

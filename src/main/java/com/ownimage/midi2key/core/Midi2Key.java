@@ -13,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, MenuInputProvider, ConfigChanger {
 
-    private static Logger logger = Logger.getLogger(Midi2Key.class);
+    private static final Logger logger = Logger.getLogger(Midi2Key.class);
 
     private Config config = Config.builder().build();
     private MidiAdapter midiAdapter = new MidiAdapter(this, true);
-    private KeyboardAdapter keyboardAdapter = new KeyboardAdapter(this, true);
+    private final KeyboardAdapter keyboardAdapter = new KeyboardAdapter(this, true);
 
-    private WaitForNextValue<KeyboardAction> lastKeyboardAction = new WaitForNextValue<>();
-    private WaitForNextValue<MidiAction> lastMidiAction = new WaitForNextValue<>();
+    private final WaitForNextValue<KeyboardAction> lastKeyboardAction = new WaitForNextValue<>();
+    private final WaitForNextValue<MidiAction> lastMidiAction = new WaitForNextValue<>();
 
     private boolean mapMidiEvents = true;
 
@@ -47,10 +47,10 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
         lastMidiAction.value(midiAction);
         if (mapMidiEvents)
             logger.debug(String.format("Midi2Key::receive %s", midiAction));
-            config.map(midiAction).ifPresent(ka -> {
-                logger.debug(String.format("Midi2Key::receive %s %s %s", rotary, midiAction, ka));
-                keyboardAdapter.sendKeyboardAction(rotary, midiAction.action(), ka);
-            });
+        config.map(midiAction).ifPresent(ka -> {
+            logger.debug(String.format("Midi2Key::receive %s %s %s", rotary, midiAction, ka));
+            keyboardAdapter.sendKeyboardAction(rotary, midiAction.action(), ka);
+        });
     }
 
     private synchronized void start() {

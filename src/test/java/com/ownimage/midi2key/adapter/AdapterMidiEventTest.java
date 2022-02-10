@@ -14,7 +14,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.ownimage.midi2key.model.MidiAction.Action.*;
+import static com.ownimage.midi2key.model.MidiAction.Action.DOWN;
+import static com.ownimage.midi2key.model.MidiAction.Action.UP;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdapterMidiEventTest {
@@ -23,50 +24,55 @@ class AdapterMidiEventTest {
     private AdapterMidiEvent underTest;
 
     private static Stream<Arguments> toMidiAction_parameters() {
-        var raw = new AdapterMidiEvent(10, 20);
-        var raw0 = new AdapterMidiEvent(10, 0);
-        var rawMax = new AdapterMidiEvent(10, MidiAction.ROTARY_MAX);
+        var rawButton = new AdapterMidiEvent(10, false, 20);
+        var raw0Button = new AdapterMidiEvent(10, false, 0);
+        var rawMaxButton = new AdapterMidiEvent(10, false, MidiAction.ROTARY_MAX);
+        var rawDial = new AdapterMidiEvent(10, true, 20);
+        var raw0Dial = new AdapterMidiEvent(10, true, 0);
+        var rawMaxDial = new AdapterMidiEvent(10, true, MidiAction.ROTARY_MAX);
 
-        var actionUP = Optional.of(new MidiAction(10, UP));
-        var actionDOWN = Optional.of(new MidiAction(10, DOWN));
-
+        var actionButtonUP = Optional.of(new MidiAction(10, false, UP));
+        var actionButtonDOWN = Optional.of(new MidiAction(10, false, DOWN));
+        var actionDialUP = Optional.of(new MidiAction(10, true, UP));
+        var actionDialDOWN = Optional.of(new MidiAction(10, true, DOWN));
         return Stream.of(
                 // rotary null values
-                Arguments.of(raw, true, null, Optional.empty()),
+                Arguments.of(raw0Dial, null, actionDialDOWN),
+                Arguments.of(rawDial, null, actionDialUP),
                 // button presses
-                Arguments.of(raw, false, 20, Optional.empty()),
-                Arguments.of(raw, false, 10, Optional.empty()),
-                Arguments.of(raw, false, 30, Optional.empty()),
-                Arguments.of(raw, false, null, Optional.empty()),
-                Arguments.of(raw0, false, 20, actionUP),
-                Arguments.of(raw0, false, 10, actionUP),
-                Arguments.of(raw0, false, 30, actionUP),
-                Arguments.of(raw0, false, null, actionUP),
-                Arguments.of(rawMax, false, 20, actionDOWN),
-                Arguments.of(rawMax, false, 10, actionDOWN),
-                Arguments.of(rawMax, false, 30, actionDOWN),
-                Arguments.of(rawMax, false, null, actionDOWN),
+                Arguments.of(rawButton, 20, Optional.empty()),
+                Arguments.of(rawButton, 10, Optional.empty()),
+                Arguments.of(rawButton, 30, Optional.empty()),
+                Arguments.of(rawButton, null, Optional.empty()),
+                Arguments.of(raw0Button, 20, actionButtonUP),
+                Arguments.of(raw0Button, 10, actionButtonUP),
+                Arguments.of(raw0Button, 30, actionButtonUP),
+                Arguments.of(raw0Button, null, actionButtonUP),
+                Arguments.of(rawMaxButton, 20, actionButtonDOWN),
+                Arguments.of(rawMaxButton, 10, actionButtonDOWN),
+                Arguments.of(rawMaxButton, 30, actionButtonDOWN),
+                Arguments.of(rawMaxButton, null, actionButtonDOWN),
                 // rotary
-                Arguments.of(raw, true, 10, actionUP),
-                Arguments.of(raw, true, 30, actionDOWN),
-                Arguments.of(raw, true, 20, Optional.empty()),
+                Arguments.of(rawDial, 10, actionDialUP),
+                Arguments.of(rawDial, 30, actionDialDOWN),
+                Arguments.of(rawDial, 20, Optional.empty()),
                 // rotary spin down past 0
-                Arguments.of(raw0, true, 0, actionDOWN),
+                Arguments.of(raw0Dial, 0, actionDialDOWN),
                 // rotary spin up past ROTARY_MAX
-                Arguments.of(rawMax, true, MidiAction.ROTARY_MAX, actionUP)
+                Arguments.of(rawMaxDial, MidiAction.ROTARY_MAX, actionDialUP)
         );
     }
 
     @BeforeEach
     public void before() {
-        underTest = new AdapterMidiEvent(10, 20);
+        underTest = new AdapterMidiEvent(10, false, 20);
         gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     @Test
     public void testEquals() {
         // given
-        var compare = new AdapterMidiEvent(10, 20);
+        var compare = new AdapterMidiEvent(10, false, 20);
         // then
         assertTrue(compare.equals(underTest));
     }
@@ -74,7 +80,7 @@ class AdapterMidiEventTest {
     @Test
     public void testNotEquals() {
         // given
-        var compare = new AdapterMidiEvent(10, 21);
+        var compare = new AdapterMidiEvent(10, false, 21);
         // then
         assertFalse(compare.equals(underTest));
     }
@@ -82,7 +88,7 @@ class AdapterMidiEventTest {
     @Test
     public void testToJson() {
         // given
-        var expected = "{\"control\":10,\"value\":20}";
+        var expected = "{\"control\":10,\"rotary\":false,\"value\":20}";
         // when
         var actual = gson.toJson(underTest);
         // then
@@ -101,11 +107,10 @@ class AdapterMidiEventTest {
 
     @ParameterizedTest
     @MethodSource("toMidiAction_parameters")
-    public void toMidiAction(@NotNull AdapterMidiEvent raw, boolean isRotary, Integer previous, Optional<MidiAction> expected) {
+    public void toMidiAction(@NotNull AdapterMidiEvent raw, Integer previous, Optional<MidiAction> expected) {
         // given
         var config = Config.builder().build();
-        if (isRotary) config = config.addRotaryControl(new MidiAction(raw.getControl(), UP));
         // when - then
-        assertEquals(expected, raw.toMidiAction(previous, isRotary));
+        assertEquals(expected, raw.toMidiAction(previous));
     }
 }

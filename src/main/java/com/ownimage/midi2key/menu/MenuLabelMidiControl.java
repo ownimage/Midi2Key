@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 public class MenuLabelMidiControl extends AbstractMenu {
 
-    private static Logger logger = Logger.getLogger(MenuLabelMidiControl.class);
+    private static final Logger logger = Logger.getLogger(MenuLabelMidiControl.class);
 
     public MenuLabelMidiControl(
             @NotNull MenuInputProvider menuInputProvider,

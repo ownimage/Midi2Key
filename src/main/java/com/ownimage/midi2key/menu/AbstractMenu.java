@@ -13,12 +13,12 @@ import static com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.VC_X;
 
 public class AbstractMenu {
 
-    private static Logger logger = Logger.getLogger(AbstractMenu.class);
-    private static String SEPARATOR = "##################################################################";
+    private static final Logger logger = Logger.getLogger(AbstractMenu.class);
+    private static final String SEPARATOR = "##################################################################";
 
     protected MenuInputProvider menuInputProvider;
     protected ConfigChanger configChanger;
-    private HashMap<Integer, AbstractMenu> menuMap = new HashMap<>();
+    private final HashMap<Integer, AbstractMenu> menuMap = new HashMap<>();
     private Integer exitKeyCode = VC_X;
 
     public AbstractMenu(
@@ -57,7 +57,7 @@ public class AbstractMenu {
         Integer keyCode;
         do {
             printPrompt(true);
-            keyCode = getKeyboardAction().getKeyCode();
+            keyCode = getKeyboardAction().keyCode();
             menuFromKeyCode(keyCode).ifPresent(m -> m.run());
         } while (keyCode != exitKeyCode);
     }

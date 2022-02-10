@@ -18,9 +18,9 @@ class WaitForNextValueTest {
     }
 
     @Test
-    public synchronized void testSetAndGet() throws InterruptedException  {
+    public synchronized void testSetAndGet() throws InterruptedException {
         // given
-        Integer actual[] = new Integer[1];
+        Integer[] actual = new Integer[1];
         var newValue = Integer.valueOf(4);
         var barrier = new CyclicBarrier(2);
         // when

@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MenuMapMIDIEvent extends AbstractMenu {
 
-    private static Logger logger = Logger.getLogger(MenuMapMIDIEvent.class);
-    
+    private static final Logger logger = Logger.getLogger(MenuMapMIDIEvent.class);
+
     public MenuMapMIDIEvent(
             @NotNull MenuInputProvider menuInputProvider,
             @NotNull ConfigChanger configChanger

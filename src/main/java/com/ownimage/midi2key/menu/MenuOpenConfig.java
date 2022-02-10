@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MenuOpenConfig extends AbstractMenu {
 
-    private static Logger logger = Logger.getLogger(MenuOpenConfig.class);
+    private static final Logger logger = Logger.getLogger(MenuOpenConfig.class);
 
     public MenuOpenConfig(
             @NotNull MenuInputProvider menuInputProvider,
