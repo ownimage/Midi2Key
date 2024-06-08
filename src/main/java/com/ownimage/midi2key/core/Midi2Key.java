@@ -73,6 +73,7 @@ public class Midi2Key implements MidiActionReceiver, KeyboardActionReceiver, Men
             menu.run();
         }
         else {
+            System.out.println("Running");
             Thread.sleep(Long.MAX_VALUE);
         }
     }
