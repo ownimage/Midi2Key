@@ -26,7 +26,7 @@ public class Config {
 
     private String filename;
     private final TreeMap<String, KeyboardAction> mapping;
-    private final TreeMap<Integer, String> labels;
+    private final TreeMap<String, String> labels;
 
     public static ConfigBuilder builder() {
         return builder("config.json");
@@ -85,12 +85,12 @@ public class Config {
 
     public Config addLabel(MidiAction midiAction, String label) {
         var l = new TreeMap<>(labels);
-        l.put(midiAction.control(), label);
+        l.put(String.valueOf(midiAction.getKey()), label);
         return withLabels(l);
     }
 
     public String getLabel(MidiAction midiAction) {
-        return labels.get(midiAction.control());
+        return labels.get(String.valueOf(midiAction.getKey()));
     }
 
     public void printConfig() {
@@ -106,8 +106,11 @@ public class Config {
     public String actionNameToString(@NotNull String name) {
         try {
             var pieces = name.split("-");
-            var label = labels.getOrDefault(Integer.parseInt(pieces[0]), pieces[0]);
-            return label + "-" + pieces[1];
+            var label = labels.getOrDefault(pieces[0], pieces[0]);
+            if (pieces.length == 1)
+                return label;
+            else
+                return label + "-" + pieces[1];
         } catch (Throwable t) {
             return name;
         }
