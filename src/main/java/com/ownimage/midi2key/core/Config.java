@@ -44,7 +44,11 @@ public class Config {
             Gson gson = new Gson();
             var config = gson.fromJson(json, Config.class);
             config.filename = getConfigFile().getName();
+            System.out.println("File opened: " + getConfigFile());
             return config;
+        }
+        else {
+            System.err.println("File does not exist: " + getConfigFile());
         }
         return this;
     }
