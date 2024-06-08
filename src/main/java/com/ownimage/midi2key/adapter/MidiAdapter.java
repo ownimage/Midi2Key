@@ -11,11 +11,10 @@ import java.util.List;
 
 public class MidiAdapter implements Receiver {
 
-    private static final int ROTARY_CONTROL_START = 1000;
-    private static Logger logger = Logger.getLogger(MidiAdapter.class);
-    private MidiActionReceiver midiEventReceiver;
-    private HashMap<Integer, Integer> previousValues;
-    private List<MidiDevice> devices = new ArrayList<>();
+    private static final Logger logger = Logger.getLogger(MidiAdapter.class);
+    private final MidiActionReceiver midiEventReceiver;
+    private final HashMap<Integer, Integer> previousValues;
+    private final List<MidiDevice> devices = new ArrayList<>();
 
     public MidiAdapter(
             @NotNull MidiActionReceiver midiEventReceiver,
@@ -65,12 +64,12 @@ public class MidiAdapter implements Receiver {
         // I'm only using VMPK for testing on the go, so it's either
         // clicked or not.
         var rotary = aMsg[0] == -70;
-        var control = Integer.parseInt(String.valueOf(aMsg[1])) + (rotary ? ROTARY_CONTROL_START : 0);
+        var control = Integer.parseInt(String.valueOf(aMsg[1]));
         var value = Integer.parseInt(String.valueOf(aMsg[2]));
-        var midiEvent = new AdapterMidiEvent(control, value);
+        var midiEvent = new AdapterMidiEvent(control, rotary, value);
         logger.debug(String.format("MidiAdapter::send gets %s, %s", aMsg[0], midiEvent));
         var previousValue = previousValues.put(control, value);
-        var actionableMidiEvent = midiEvent.toMidiAction(previousValue, rotary);
+        var actionableMidiEvent = midiEvent.toMidiAction(previousValue);
         actionableMidiEvent.ifPresent(e -> midiEventReceiver.receive(rotary, e));
     }
 

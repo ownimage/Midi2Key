@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 public class MenuLabelMidiControl extends AbstractMenu {
 
-    private static Logger logger = Logger.getLogger(MenuLabelMidiControl.class);
+    private static final Logger logger = Logger.getLogger(MenuLabelMidiControl.class);
 
     public MenuLabelMidiControl(
             @NotNull MenuInputProvider menuInputProvider,
@@ -28,6 +28,7 @@ public class MenuLabelMidiControl extends AbstractMenu {
     @Override
     public void run() {
         try {
+            configChanger.stopMapping();
             printPrompt(false);
             var midiAction = getMidiAction();
             logger.info("Enter Label, press return to leave unchanged");
@@ -37,9 +38,11 @@ public class MenuLabelMidiControl extends AbstractMenu {
                 configChanger.config(config);
                 logger.info("MIDI Label added");
             }
-
         } catch (Throwable t) {
             logger.info("Error", t);
+        }
+        finally {
+            configChanger.startMapping();
         }
     }
 }

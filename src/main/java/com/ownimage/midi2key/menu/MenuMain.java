@@ -15,7 +15,6 @@ public class MenuMain extends AbstractMenu {
         addMenuMap(VC_S, new MenuSaveConfig(menuInputProvider, configChanger));
         addMenuMap(VC_O, new MenuOpenConfig(menuInputProvider, configChanger));
         addMenuMap(VC_P, new MenuPrintConfig(menuInputProvider, configChanger));
-        addMenuMap(VC_R, new MenuSetRotary(menuInputProvider, configChanger));
         addMenuMap(VC_M, new MenuMapMIDIEvent(menuInputProvider, configChanger));
         addMenuMap(VC_L, new MenuLabelMidiControl(menuInputProvider, configChanger));
     }
@@ -26,7 +25,6 @@ public class MenuMain extends AbstractMenu {
                 "S - Config Save\n" +
                 "O - Config Open\n" +
                 "P - Config Print\n" +
-                "R - Set MIDI control as Rotary\n" +
                 "L - Set MIDI label\n" +
                 "M - Map MIDI control to Key\n";
     }

@@ -2,8 +2,6 @@ package com.ownimage.midi2key.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ownimage.midi2key.adapter.AdapterMidiEvent;
-import com.ownimage.midi2key.menu.AbstractMenu;
 import com.ownimage.midi2key.model.KeyboardAction;
 import com.ownimage.midi2key.model.MidiAction;
 import lombok.*;
@@ -16,7 +14,6 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 @ToString
 @AllArgsConstructor
@@ -25,19 +22,18 @@ import java.util.TreeSet;
 @Builder(toBuilder = true)
 public class Config {
 
-    private static Logger logger = Logger.getLogger(Config.class);
+    private static final Logger logger = Logger.getLogger(Config.class);
 
     private String filename;
-    private TreeSet<Integer> rotaryControls;
-    private TreeMap<String, KeyboardAction> mapping;
-    private TreeMap<Integer, String> labels;
+    private final TreeMap<String, KeyboardAction> mapping;
+    private final TreeMap<String, String> labels;
 
     public static ConfigBuilder builder() {
         return builder("config.json");
     }
 
     public static ConfigBuilder builder(String filename) {
-        return new Config(filename, new TreeSet<>(), new TreeMap<>(), new TreeMap<>()).toBuilder();
+        return new Config(filename, new TreeMap<>(), new TreeMap<>()).toBuilder();
     }
 
     @SneakyThrows
@@ -77,42 +73,26 @@ public class Config {
         fileWriter.close();
     }
 
-    public Config addRotaryControl(@NotNull MidiAction control) {
-        TreeSet<Integer> rc = new TreeSet<>(rotaryControls);
-        rc.add(control.control());
-        return withRotaryControls(rc);
-    }
-
     public Config addMapping(@NotNull MidiAction midiEvent, @NotNull KeyboardAction keyboardAction) {
         var m = new TreeMap<>(mapping);
-        m.put(getMappingKey(midiEvent), keyboardAction);
+        m.put(midiEvent.getKey(), keyboardAction);
         return withMapping(m);
     }
 
-    public String getMappingKey(@NotNull MidiAction midiEvent) {
-        return rotaryControls.contains(midiEvent.control())
-                ? midiEvent.control() + "-" + midiEvent.action()
-                : String.valueOf(midiEvent.control());
-    }
-
     public Optional<KeyboardAction> map(@NotNull MidiAction midiEvent) {
-        return Optional.ofNullable(mapping.get(getMappingKey(midiEvent)));
-    }
-
-    // TODO dont like the AdapterMidiEvent leaking here
-    public boolean isRotary(AdapterMidiEvent raw) {
-        return rotaryControls.contains(raw.getControl());
+        return Optional.ofNullable(mapping.get(midiEvent.getKey()));
     }
 
     public Config addLabel(MidiAction midiAction, String label) {
         var l = new TreeMap<>(labels);
-        l.put(midiAction.control(), label);
+        l.put(String.valueOf(midiAction.getKey()), label);
         return withLabels(l);
     }
 
     public String getLabel(MidiAction midiAction) {
-        return labels.get(midiAction.control());
+        return labels.get(String.valueOf(midiAction.getKey()));
     }
+
     public void printConfig() {
         logger.debug("############ printing config");
         mapping.entrySet().forEach(e -> logger.info(mappingToString(e)));
@@ -126,8 +106,11 @@ public class Config {
     public String actionNameToString(@NotNull String name) {
         try {
             var pieces = name.split("-");
-            var label = labels.getOrDefault(Integer.parseInt(pieces[0]), pieces[0]);
-            return label + "-" + pieces[1];
+            var label = labels.getOrDefault(pieces[0], pieces[0]);
+            if (pieces.length == 1)
+                return label;
+            else
+                return label + "-" + pieces[1];
         } catch (Throwable t) {
             return name;
         }

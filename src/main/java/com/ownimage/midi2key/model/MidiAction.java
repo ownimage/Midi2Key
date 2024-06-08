@@ -18,5 +18,12 @@ public class MidiAction {
     public static final int ROTARY_MAX = 127;
 
     private final int control;
+    private final boolean rotary;
     private final Action action;
+
+    public String getKey() {
+        return rotary()
+                ? control + "R-" + action
+                : String.valueOf(control);
+    }
 }

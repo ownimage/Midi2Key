@@ -6,8 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class WaitForNextValue<T> {
 
     private T lastValue;
-    private ReentrantLock lock = new ReentrantLock();
-    private Condition newValue = lock.newCondition();
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition newValue = lock.newCondition();
 
     public void value(T value) {
         try {
